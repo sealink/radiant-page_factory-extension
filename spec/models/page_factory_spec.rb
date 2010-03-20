@@ -37,7 +37,7 @@ describe PageFactory do
 
     it "should return parts from the currently specified factory" do
       PageFactory.current_factory = DefinedPageFactory
-      PageFactory.parts.should eql(DefinedPageFactory.parts)
+      PageFactory.current_factory.parts.should eql(DefinedPageFactory.parts)
     end
 
     it "should not override other factories" do
