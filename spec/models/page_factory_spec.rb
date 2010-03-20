@@ -44,6 +44,11 @@ describe PageFactory do
       PageFactory.current_factory = DefinedPageFactory
       SubPageFactory.parts.should_not eql(DefinedPageFactory.parts)
     end
+
+    it "should return base class by default" do
+      PageFactory.current_factory = nil
+      PageFactory.current_factory.parts.should eql(PageFactory.parts)
+    end
   end
 
 end

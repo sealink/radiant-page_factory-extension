@@ -12,6 +12,10 @@ class PageFactory
       @parts << PagePart.new(attrs.merge(:name => name))
     end
 
+    def current_factory
+      @current_factory || PageFactory
+    end
+
     private
       def default_page_parts(config = Radiant::Config)
         default_parts = config['defaults.page.parts'].to_s.strip.split(/\s*,\s*/)
