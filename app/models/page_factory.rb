@@ -1,19 +1,19 @@
 class PageFactory
 
   class << self
-    attr_accessor :current_factory
+    attr_accessor :__page_parts, :current_factory
 
     def parts
-      (@current_factory || self).instance_variable_get :@page_parts
+      (@current_factory || self).__page_parts
     end
 
     def inherited(subclass)
-      subclass.instance_variable_set :@page_parts, @page_parts.dup
+      subclass.__page_parts = @__page_parts.dup
     end
 
     def part(name, attrs={})
-      @page_parts.delete_if { |p| name == p.name }
-      @page_parts << PagePart.new(attrs.merge(:name => name))
+      @__page_parts.delete_if { |p| name == p.name }
+      @__page_parts << PagePart.new(attrs.merge(:name => name))
     end
 
     private
@@ -25,5 +25,5 @@ class PageFactory
       end
   end
   
-  @page_parts = default_page_parts
+  @__page_parts = default_page_parts
 end
