@@ -9,6 +9,6 @@ describe PageFactory::PageExtensions do
   it "should override Page.default_page_parts" do
     PageFactory.current_factory = OverridingPageFactory
     page = Page.new_with_defaults(Radiant::Config)
-    page.parts.map(&:name).should eql(%w(alpha, beta))
+    page.parts.map(&:name).should eql(%w(alpha beta))
   end
 end
