@@ -58,6 +58,6 @@ Page factories shouldn't have an opinion about any of those attributes until you
 
 +   **Modeling.** Pages need to retain some association to their initial factory so that we can sync parts as changes are made to the factory.
 
-    Should it be possible to change a page's factory after creation? Ideally, the Factory class is decoupled to the point that there shouldn't be a reason not to. Again, flexibility should be preserved wherever possible.
+    Should it be possible to change a page's factory after creation? After some thought, I'm going to punt on this. In the past it's proven difficult to swap page parts on the fly, and adding another select to the Page UI seemed confusing (especially next to the existing 'Page Type' select.)
 
 +   **Part definitions.** In addition to the part name, I'd like the ability to add a default value and some help/descriptive text.
