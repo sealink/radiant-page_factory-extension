@@ -3,7 +3,9 @@ class PageFactory
     def self.included(base)
       base.class_eval do
         around_filter :set_page_factory, :only => :new
-        alias_method_chain :new, :defaults
+        responses do |r|
+          r.singular.default { set_page_defaults if 'new' == action_name }
+        end
       end
     end
 
@@ -18,8 +20,7 @@ class PageFactory
       end
     end
 
-    def new_with_defaults
-      new_without_defaults
+    def set_page_defaults
       model.class_name = PageFactory.current_factory.page_class
       model.layout = Layout.find_by_name(PageFactory.current_factory.layout)
     end
