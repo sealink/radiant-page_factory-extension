@@ -1,10 +1,11 @@
 module Admin::FactoryLinkHelper
-  def link_for(page)
+  def factory_link_for(page)
     page.nil? ? new_admin_page_path : new_admin_page_child_path(page)
   end
 
-  def factories
+  def factory_options
     descendants = PageFactory.descendants.sort { |a,b| a.name <=> b.name }
-    [PageFactory, *descendants].map { |p| [p.template_name, p.name] }
+    factories = [PageFactory, *descendants].map { |p| [p.template_name, p.name] }
+    options_for_select factories, 'PageFactory'
   end
 end
