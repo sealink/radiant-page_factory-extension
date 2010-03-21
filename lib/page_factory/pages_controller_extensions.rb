@@ -5,9 +5,7 @@ class PageFactory
     end
 
     def set_page_factory
-      if params[:page_factory]
-        PageFactory.current_factory = params[:page_factory]
-      end
+      PageFactory.current_factory = params[:page_factory]
       yield
     ensure
       PageFactory.current_factory = nil
