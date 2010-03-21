@@ -13,22 +13,6 @@ describe PageFactory do
     SubPageFactory.parts.should == PageFactory.parts
   end
 
-  it "should add a part to page_parts" do
-    SubPageFactory.part 'Sidebar'
-    SubPageFactory.parts.find { |p| p.name == 'Sidebar'}.should be_a(PagePart)
-  end
-
-  it "should add a part with attributes" do
-    SubPageFactory.part 'Filtered', :filter_id => 'markdown'
-    SubPageFactory.parts.find { |p| p.name == 'Filtered'}.filter_id.should eql('markdown')
-  end
-
-  it "should override a part" do
-    SubPageFactory.part 'Override', :filter_id => 'old id'
-    SubPageFactory.part 'Override', :filter_id => 'new id'
-    SubPageFactory.parts.find { |p| p.name == 'Override'}.filter_id.should eql('new id')
-  end
-
   it "should inherit page_class and layout" do
     SubPageFactory.layout = 'LayoutName'
     SubPageFactory.page_class = 'ClassName'
@@ -36,6 +20,41 @@ describe PageFactory do
 
     ThirdPageFactory.layout.should eql('LayoutName')
     ThirdPageFactory.page_class.should eql('ClassName')
+  end
+
+  describe '.part' do
+    it "should add a part to page_parts" do
+      SubPageFactory.part 'Sidebar'
+      SubPageFactory.parts.find { |p| p.name == 'Sidebar'}.should be_a(PagePart)
+    end
+
+    it "should add a part with attributes" do
+      SubPageFactory.part 'Filtered', :filter_id => 'markdown'
+      SubPageFactory.parts.find { |p| p.name == 'Filtered'}.filter_id.should eql('markdown')
+    end
+
+    it "should override a part" do
+      SubPageFactory.part 'Override', :filter_id => 'old id'
+      SubPageFactory.part 'Override', :filter_id => 'new id'
+      SubPageFactory.parts.find { |p| p.name == 'Override'}.filter_id.should eql('new id')
+    end
+  end
+
+  describe '.remove' do
+    class FullPageFactory < PageFactory
+      part 'one'
+      part 'two'
+    end
+
+    class EmptyPageFactory < FullPageFactory
+      remove 'body'
+      remove 'extended'
+    end
+
+    it "should remove a part" do
+      EmptyPageFactory.remove 'one'
+      EmptyPageFactory.parts.map(&:name).should eql(%w(two))
+    end
   end
 
   describe ".current_factory" do

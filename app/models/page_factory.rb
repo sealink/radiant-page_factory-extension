@@ -12,8 +12,12 @@ class PageFactory
     end
 
     def part(name, attrs={})
-      @parts.delete_if { |p| name == p.name }
+      remove name
       @parts << PagePart.new(attrs.merge(:name => name))
+    end
+
+    def remove(name)
+      @parts.delete_if { |p| name == p.name }
     end
 
     def current_factory
