@@ -1,5 +1,4 @@
-# Uncomment this if you reference any of your controllers in activate
-# require_dependency 'application_controller'
+require_dependency 'application_controller'
 
 class PageFactoryExtension < Radiant::Extension
   version "1.0"
@@ -8,5 +7,6 @@ class PageFactoryExtension < Radiant::Extension
   
   def activate
     Page.send :include, PageFactory::PageExtensions
+    Admin::PagesController.send :include, PageFactory::PagesControllerExtensions
   end
 end

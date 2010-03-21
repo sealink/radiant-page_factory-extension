@@ -49,6 +49,11 @@ describe PageFactory do
       PageFactory.current_factory = nil
       PageFactory.current_factory.parts.should eql(PageFactory.parts)
     end
+
+    it "should should accept a string" do
+      PageFactory.current_factory = 'DefinedPageFactory'
+      PageFactory.current_factory.should eql(DefinedPageFactory)
+    end
   end
 
 end

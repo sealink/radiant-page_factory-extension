@@ -16,6 +16,13 @@ class PageFactory
       @current_factory || PageFactory
     end
 
+    def current_factory=(factory)
+      factory = factory.constantize if factory.is_a?(String)
+      if factory.nil? or factory <= PageFactory
+        @current_factory = factory
+      end
+    end
+
     private
       def default_page_parts(config = Radiant::Config)
         default_parts = config['defaults.page.parts'].to_s.strip.split(/\s*,\s*/)
