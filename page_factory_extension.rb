@@ -14,5 +14,11 @@ class PageFactoryExtension < Radiant::Extension
   def activate
     Page.send :include, PageFactory::PageExtensions
     Admin::PagesController.send :include, PageFactory::PagesControllerExtensions
+
+    ([RADIANT_ROOT] + Radiant::Extension.descendants.map(&:root)).each do |path|
+      Dir["#{path}/app/models/*_page_factory.rb"].each do |page_part|
+         $1.camelize.constantize if page_part =~ %r{/([^/]+)\.rb}
+      end
+    end
   end
 end
