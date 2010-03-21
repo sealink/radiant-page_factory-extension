@@ -1,10 +1,14 @@
 class PageFactory
+  include Annotatable
+  annotate :layout, :page_class
 
   class << self
     attr_accessor :parts, :current_factory
 
     def inherited(subclass)
       subclass.parts = @parts.dup
+      subclass.layout = layout
+      subclass.page_class = page_class
     end
 
     def part(name, attrs={})

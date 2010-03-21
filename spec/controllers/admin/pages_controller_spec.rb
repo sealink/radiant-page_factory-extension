@@ -1,18 +1,28 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe Admin::PagesController do
-  dataset :users
+  dataset :config, :users, :layouts
 
   class ControllerPageFactory < PageFactory
     part 'alpha'
     part 'beta'
   end
 
-  before do
+  class ArchivePageFactory < PageFactory
+    layout 'UTF8'
+    page_class 'ArchivePage'
+  end
+
+  before :each do
     login_as :admin
   end
 
   describe "#new" do
+    it "should assign default parts when no factory is passed" do
+      get :new
+      assigns(:page).parts.map(&:name).should eql(%w(body extended))
+    end
+
     it "should set the page factory" do
       PageFactory.should_receive(:current_factory=).with('ControllerPageFactory').ordered
       PageFactory.should_receive(:current_factory=).with(nil).ordered
@@ -22,7 +32,22 @@ describe Admin::PagesController do
 
     it "should assign parts to @page based on the current factory" do
       get :new, :page_factory => 'ControllerPageFactory'
-      assigns(:page).parts.map(&:name).should eql(%w(alpha beta))
+      assigns(:page).parts.map(&:name).should eql(%w(body extended alpha beta))
+    end
+
+    it "should not choke on bad factory names" do
+      get :new, :page_factory => 'BogusFactory'
+      response.should be_success
+    end
+
+    it "should pass a layout" do
+      get :new, :page_factory => 'ArchivePageFactory'
+      assigns(:page).layout.should eql(layouts(:utf8))
+    end
+
+    it "should pass a page type" do
+      get :new, :page_factory => 'ArchivePageFactory'
+      assigns(:page).class_name.should eql('ArchivePage')
     end
   end
 end

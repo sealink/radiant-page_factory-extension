@@ -29,6 +29,15 @@ describe PageFactory do
     SubPageFactory.parts.find { |p| p.name == 'Override'}.filter_id.should eql('new id')
   end
 
+  it "should inherit page_class and layout" do
+    SubPageFactory.layout = 'LayoutName'
+    SubPageFactory.page_class = 'ClassName'
+    class ThirdPageFactory < SubPageFactory ; end
+
+    ThirdPageFactory.layout.should eql('LayoutName')
+    ThirdPageFactory.page_class.should eql('ClassName')
+  end
+
   describe ".current_factory" do
     class DefinedPageFactory < PageFactory
       part 'alpha'
