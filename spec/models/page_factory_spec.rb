@@ -47,13 +47,16 @@ describe PageFactory do
     end
 
     class EmptyPageFactory < FullPageFactory
-      remove 'body'
-      remove 'extended'
     end
 
     it "should remove a part" do
       EmptyPageFactory.remove 'one'
-      EmptyPageFactory.parts.map(&:name).should eql(%w(two))
+      EmptyPageFactory.parts.map(&:name).should_not include('one')
+    end
+
+    it "should not be case sensitive" do
+      EmptyPageFactory.remove 'TWO'
+      EmptyPageFactory.parts.map(&:name).should_not include('two')
     end
   end
 

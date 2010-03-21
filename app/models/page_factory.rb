@@ -17,7 +17,7 @@ class PageFactory
     end
 
     def remove(name)
-      @parts.delete_if { |p| name == p.name }
+      @parts.delete_if { |p| name.downcase == p.name.downcase }
     end
 
     def current_factory
