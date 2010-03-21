@@ -1,0 +1,9 @@
+.popup
+  %h3.title= t('add_child')
+  - form_for :page, :url => link_for(params[:page]), :html => {:method => :get} do |f|
+    %label{:for => 'page_page_factory'} Template:
+    = f.select :page_factory, factories, :selected => 'Page'
+    %p.buttons
+      = submit_tag t('add_child')
+      = t('or')
+      = link_to_function t('cancel'), "$(this).closePopup()"
