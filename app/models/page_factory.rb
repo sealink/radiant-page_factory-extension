@@ -1,6 +1,7 @@
 class PageFactory
   include Annotatable
-  annotate :layout, :page_class
+  annotate :template_name, :layout, :page_class
+  template_name 'Page'
 
   class << self
     attr_accessor :parts, :current_factory
@@ -9,6 +10,7 @@ class PageFactory
       subclass.parts = @parts.dup
       subclass.layout = layout
       subclass.page_class = page_class
+      subclass.template_name = subclass.name.to_name('Page Factory')
     end
 
     def part(name, attrs={})

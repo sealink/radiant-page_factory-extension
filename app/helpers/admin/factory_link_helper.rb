@@ -4,6 +4,7 @@ module Admin::FactoryLinkHelper
   end
 
   def factories
-    [PageFactory, *PageFactory.descendants].map &:name
+    descendants = PageFactory.descendants.sort { |a,b| a.name <=> b.name }
+    [PageFactory, *descendants].map { |p| [p.template_name, p.name] }
   end
 end
