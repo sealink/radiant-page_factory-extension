@@ -5,7 +5,8 @@ module Admin::FactoryLinkHelper
 
   def factory_options
     descendants = PageFactory.descendants.sort { |a,b| a.name <=> b.name }
-    factories = [PageFactory, *descendants].map { |p| [p.template_name, p.name] }
+    factories = descendants.map { |p| [p.template_name, p.name] }
+    factories.unshift ['Page', nil]
     options_for_select factories, 'PageFactory'
   end
 end

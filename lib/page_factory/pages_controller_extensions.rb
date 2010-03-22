@@ -23,6 +23,7 @@ class PageFactory
     def set_page_defaults
       model.class_name = PageFactory.current_factory.page_class
       model.layout = Layout.find_by_name(PageFactory.current_factory.layout)
+      model.page_factory = PageFactory.current_factory.name unless PageFactory == PageFactory.current_factory
     end
   end
 end

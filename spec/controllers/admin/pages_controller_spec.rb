@@ -23,7 +23,17 @@ describe Admin::PagesController do
       assigns(:page).parts.map(&:name).should eql(%w(body extended))
     end
 
-    it "should set the page factory" do
+    it "should not set a page factory if none is given" do
+      get :new
+      assigns(:page).page_factory.should be_nil
+    end
+
+    it "should set the new page's factory" do
+      get :new, :page_factory => 'ControllerPageFactory'
+      assigns(:page).page_factory.should eql('ControllerPageFactory')
+    end
+
+    it "should set the current factory" do
       PageFactory.should_receive(:current_factory=).with('ControllerPageFactory').ordered
       PageFactory.should_receive(:current_factory=).with(nil).ordered
       
