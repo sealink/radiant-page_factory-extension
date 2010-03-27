@@ -48,16 +48,8 @@ Page factories shouldn't have an opinion about any of those attributes until you
 
 ## Notes on implementation
 
-+   **Syncing.** There needs to be some way to copy modifications from the factory to the pages in the database. Because I'm not exposing these factories in the admin UI, there's no need to do this in real-time. I may take a note from File System Resources and add a rake task that syncs each page's parts to the current specification in its factory.
++   **Syncing.** Because I'm not exposing these factories in the admin UI, there's no need to do this in real-time. Unless explicitly asked, the methods responsible for altering existing content ignore Plain Old Pages so that you have at least one type of Page that's always open to modification and not in any danger of being overwritten.
 
-    There may need to be two tasks: one that only adds missing parts (soft sync) and one that both adds missing parts and removes vestigial parts (hard sync.) The latter is obviously incompatible with adding parts on the fly, but so be it.
-    
-    One workaround would be to make the sync tasks ignore Plain Old Pages so that you have at least one type of Page that's always open to modification.
++   **Changing factories.** I decided not to implement a way to change a page's factory after creation. This is mostly because I felt adding a new element to the page edit interface wasn't in line with PageFactory's stated goal of changing as little as possible about page behavior. It was confusing to have both a 'Page Type' select and a factory/template/whatever select side-by-side.
 
-+   **Part inheritance.** I'd like it if parts were inheritable among factories. The base factory should get its parts from `Radiant::Config['defaults.page.parts]` and its subclasses should inherit these. The parts array has to remain mutable for addition/removal/overrides.
-
-+   **Modeling.** Pages need to retain some association to their initial factory so that we can sync parts as changes are made to the factory.
-
-    Should it be possible to change a page's factory after creation? After some thought, I'm going to punt on this. In the past it's proven difficult to swap page parts on the fly, and adding another select to the Page UI seemed confusing (especially next to the existing 'Page Type' select.)
-
-+   **Part definitions.** In addition to the part name, I'd like the ability to add a default value and some help/descriptive text.
+    Additionally, I haven't worked out how changing a page's factory should work. Do the parts get reassigned on the fly? What happens if the pages share some parts?
