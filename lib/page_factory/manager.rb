@@ -32,7 +32,7 @@ class PageFactory
         end
       end
 
-      def update_layouts!(page_factory=nil)
+      def sync_layouts!(page_factory=nil)
         PageFactory.descendants.select(&by_factory(page_factory)).each do |factory|
           Page.update_all({:layout_id => Layout.find_by_name(factory.layout, :select => :id).try(:id)}, {:page_factory => factory.name})
         end

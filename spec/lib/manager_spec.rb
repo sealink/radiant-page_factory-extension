@@ -146,7 +146,7 @@ describe PageFactory::Manager do
     it "should operate on Plain Old Pages"
   end
   
-  describe "#update_layouts!" do
+  describe ".sync_layouts!" do
     dataset do
       create_record :layout, :one, :name => 'Layout One'
       create_record :layout, :two, :name => 'Layout Two'
@@ -160,21 +160,21 @@ describe PageFactory::Manager do
     end
 
     it "should change page layout to match factory" do
-      PageFactory::Manager.update_layouts!
+      PageFactory::Manager.sync_layouts!
       @managed.reload.layout.should eql(layouts(:one))
     end
 
     it "should operate on a single factory" do
       @other.layout = layouts(:two)
       @other.save
-      PageFactory::Manager.update_layouts! :ManagedPageFactory
+      PageFactory::Manager.sync_layouts! :ManagedPageFactory
       @other.reload.layout.should eql(layouts(:two))
     end
 
     it "should operate on Plain Old Pages"
   end
 
-  describe "#sync_classes!" do
+  describe ".sync_classes!" do
     class SubPage < Page ; end
     ManagedPageFactory.page_class 'SubPage'
     OtherPageFactory.page_class 'SubPage'
