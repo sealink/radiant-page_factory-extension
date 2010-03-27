@@ -119,8 +119,9 @@ describe PageFactory::Manager do
 
   describe ".update_parts" do
     it "should add missing parts" do
+      @managed.parts.should be_empty
       PageFactory::Manager.update_parts
-      @managed.parts.map(&:name).should include('new')
+      @managed.parts.reload.map(&:name).should include('new')
     end
 
     it "should not duplicate existing parts" do
@@ -136,13 +137,40 @@ describe PageFactory::Manager do
       @managed.parts.should include(@existing)
     end
 
-    it "should operate on a single factory"
+    it "should operate on a single factory" do
+      @other.parts = [e = @existing.clone]
+      PageFactory::Manager.update_parts :ManagedPageFactory
+      @other.reload.parts.should == [e]
+    end
+
     it "should operate on Plain Old Pages"
   end
   
   describe "#update_layouts!" do
-    it "should change page layout to match factory"
-    it "should operate on a single factory"
+    dataset do
+      create_record :layout, :one, :name => 'Layout One'
+      create_record :layout, :two, :name => 'Layout Two'
+    end
+
+    before do
+      ManagedPageFactory.layout 'Layout One'
+      OtherPageFactory.layout 'Layout One'
+      @managed.layout = layouts(:two)
+      @managed.save
+    end
+
+    it "should change page layout to match factory" do
+      PageFactory::Manager.update_layouts!
+      @managed.reload.layout.should eql(layouts(:one))
+    end
+
+    it "should operate on a single factory" do
+      @other.layout = layouts(:two)
+      @other.save
+      PageFactory::Manager.update_layouts! :ManagedPageFactory
+      @other.reload.layout.should eql(layouts(:two))
+    end
+
     it "should operate on Plain Old Pages"
   end
 

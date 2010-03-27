@@ -11,8 +11,8 @@ class PageFactory
         end
       end
 
-      def update_parts
-        PageFactory.descendants.each do |factory|
+      def update_parts(page_factory=nil)
+        PageFactory.descendants.select(&by_factory(page_factory)).each do |factory|
           Page.find(:all, :include => :parts, :conditions => {:page_factory => factory.name}).each do |page|
             existing = lambda { |f| page.parts.detect { |p| f.name.downcase == p.name.downcase } }
             page.parts.create factory.parts.reject(&existing).map(&:attributes)
@@ -29,6 +29,12 @@ class PageFactory
             needs_update = lambda { |f| unsynced_parts.map(&:name).include? f.name }
             page.parts.create factory.parts.select(&needs_update).map &:attributes
           end
+        end
+      end
+
+      def update_layouts!(page_factory=nil)
+        PageFactory.descendants.select(&by_factory(page_factory)).each do |factory|
+          Page.update_all({:layout_id => Layout.find_by_name(factory.layout, :select => :id).try(:id)}, {:page_factory => factory.name})
         end
       end
 
