@@ -13,11 +13,27 @@ class PageFactory
       subclass.template_name = subclass.name.to_name('Factory')
     end
 
+    ##
+    # Add a part to this PageFactory
+    #
+    # @param [String] name The name of the page part
+    # @param [Hash] attrs A hash of attributes used to construct this part.
+    # @option attrs [String] :description Some additional text that will be
+    #   shown in the part's tab on the page editing screen. This is used to
+    #   display a part description or helper text to editors.
+    #
+    # @example Add a part with default content and some help text
+    #   part 'Sidebar', :content => "Lorem ipsum dolor",
+    #                   :description => "This appears in the right-hand sidebar."
     def part(name, attrs={})
       remove name
       @parts << PagePart.new(attrs.merge(:name => name))
     end
 
+    ##
+    # Remove a part from this PageFactory
+    #
+    # @param [String] name The name of the part to remove.
     def remove(name)
       @parts.delete_if { |p| name.downcase == p.name.downcase }
     end

@@ -8,6 +8,11 @@ class PageFactory
         private_class_method :default_page_parts
       end
       base.class_eval do
+        ##
+        # The PageFactory that was used to create this page. Note that Plain
+        #   Old Pages don't get a factory assigned to them.
+        #
+        # @return [PageFactory, nil] This Page's initial PageFactory
         def page_factory
           read_attribute(:page_factory).try :constantize
         end
