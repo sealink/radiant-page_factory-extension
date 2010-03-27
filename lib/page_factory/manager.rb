@@ -2,7 +2,7 @@ class PageFactory
   class Manager
     class << self
 
-      def prune!(page_factory=nil)
+      def prune_parts!(page_factory=nil)
         PageFactory.descendants.select(&by_factory(page_factory)).each do |factory|
           parts = PagePart.find :all, :include => :page,
                   :conditions => ['pages.page_factory = :factory AND page_parts.name NOT IN (:parts)',
@@ -20,7 +20,7 @@ class PageFactory
         end
       end
 
-      def sync!(page_factory=nil)
+      def sync_parts!(page_factory=nil)
         PageFactory.descendants.select(&by_factory(page_factory)).each do |factory|
           Page.find(:all, :include => :parts, :conditions => {:page_factory => factory.name}).each do |page|
             unsynced = lambda { |p| factory.parts.detect { |f| f.name.downcase == p.name.downcase and f.class != p.class } }

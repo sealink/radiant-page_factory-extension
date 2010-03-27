@@ -24,22 +24,22 @@ describe PageFactory::Manager do
     pages(:managed), pages(:plain), pages(:other), page_parts(:existing), page_parts(:old), page_parts(:new)
   end
 
-  describe ".prune!" do
+  describe ".prune_parts!" do
     it "should remove vestigial parts" do
       @managed.parts.concat [@existing, @old]
-      PageFactory::Manager.prune!
+      PageFactory::Manager.prune_parts!
       @managed.reload.parts.should_not include(@old)
     end
 
     it "should leave listed parts alone" do
       @managed.parts.concat [@existing, @old]
-      PageFactory::Manager.prune!
+      PageFactory::Manager.prune_parts!
       @managed.reload.parts.should include(@existing)
     end
 
     it "should leave Plain Old Pages alone" do
       @plain.parts.concat [@existing, @old]
-      PageFactory::Manager.prune!
+      PageFactory::Manager.prune_parts!
       @plain.reload.parts.should include(@existing)
       @plain.reload.parts.should include(@old)
     end
@@ -48,7 +48,7 @@ describe PageFactory::Manager do
       e, o = @existing.clone, @old.clone
       @managed.parts.concat [e, o]
       @other.parts.concat [@existing, @old]
-      PageFactory::Manager.prune! ManagedPageFactory
+      PageFactory::Manager.prune_parts! ManagedPageFactory
       @managed.parts.should_not include(o)
       @other.reload.parts.should include(@old)
     end
@@ -56,7 +56,7 @@ describe PageFactory::Manager do
     it "should operate on Plain Old Pages"
   end
   
-  describe ".sync!" do
+  describe ".sync_parts!" do
     class AddPartClass < ActiveRecord::Migration
       def self.up
         add_column :page_parts, :part_class, :string
@@ -92,25 +92,25 @@ describe PageFactory::Manager do
     end
 
     it "should delete parts whose classes don't match" do
-      PageFactory::Manager.sync!
+      PageFactory::Manager.sync_parts!
       @managed.reload.parts.should_not include(@new)
     end
 
     it "should replace parts whose classes don't match" do
-      PageFactory::Manager.sync!
+      PageFactory::Manager.sync_parts!
       @managed.reload.parts.detect { |p| p.name == 'new'}.class.should == PagePart
     end
 
     it "should leave synced parts alone" do
       @managed.parts = [@new]
-      PageFactory::Manager.sync!
+      PageFactory::Manager.sync_parts!
       @managed.reload.parts.should eql([@new])
     end
 
     it "should operate on a single factory" do
       c = @part.clone
       @other.parts = [c]
-      PageFactory::Manager.sync! :ManagedPageFactory
+      PageFactory::Manager.sync_parts! :ManagedPageFactory
       @other.reload.parts.should include(c)
     end
 
