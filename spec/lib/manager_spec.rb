@@ -51,6 +51,37 @@ describe PageFactory::Manager do
 
     it "should operate on Plain Old Pages"
   end
+  
+  describe ".sync!" do
+    class SubPagePart < PagePart ; end
+
+    before do
+      @part = SubPagePart.new(:name => 'new')
+      Page.stub!(:find).and_return([@managed])
+      @managed.parts = [@part]
+    end
+
+    it "should delete parts whose classes don't match" do
+      @managed.parts.should_receive(:destroy).with([@part])
+      @managed.parts.should_receive(:destroy).with(any_args)  # don't complain about other loops
+      PageFactory::Manager.sync!
+    end
+
+    it "should replace parts whose classes don't match" do
+      @managed.parts.stub!(:destroy).and_return { @managed.parts.delete(@part) } # make sure mock actually removes the part
+      PageFactory::Manager.sync!
+      @managed.parts.detect { |p| p.name == 'new' }.class.should == PagePart
+    end
+
+    it "should leave synced parts alone" do
+      @managed.parts = [@new]
+      PageFactory::Manager.sync!
+      @managed.parts.should eql([@new])
+    end
+
+    it "should operate on a single factory"
+    it "should operate on Plain Old Pages"
+  end
 
   describe ".update_parts" do
     it "should add missing parts" do
@@ -63,8 +94,14 @@ describe PageFactory::Manager do
       lambda { PageFactory::Manager.update_parts }.should_not change(@managed.parts, :size)
     end
 
-    it "should not override matching parts"
-    it "should override parts whose classes don't match"
+    it "should not replace matching parts" do
+      @managed.parts.concat [@new, @existing]
+      PageFactory::Manager.update_parts
+      @managed.reload
+      @managed.parts.should include(@new)
+      @managed.parts.should include(@existing)
+    end
+
     it "should operate on a single factory"
     it "should operate on Plain Old Pages"
   end
