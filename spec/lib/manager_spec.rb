@@ -16,6 +16,7 @@ describe PageFactory::Manager do
   end
 
   class OtherPageFactory < PageFactory
+    part 'new'
   end
 
   before do
@@ -106,7 +107,13 @@ describe PageFactory::Manager do
       @managed.reload.parts.should eql([@new])
     end
 
-    it "should operate on a single factory"
+    it "should operate on a single factory" do
+      c = @part.clone
+      @other.parts = [c]
+      PageFactory::Manager.sync! :ManagedPageFactory
+      @other.reload.parts.should include(c)
+    end
+
     it "should operate on Plain Old Pages"
   end
 

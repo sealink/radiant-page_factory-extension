@@ -2,11 +2,8 @@ class PageFactory
   class Manager
     class << self
 
-      def prune!(klass=nil)
-        by_factory = lambda do |descendant|
-          klass.nil? ? true : descendant.name == klass.to_s.camelcase
-        end
-        PageFactory.descendants.select(&by_factory).each do |factory|
+      def prune!(page_factory=nil)
+        PageFactory.descendants.select(&by_factory(page_factory)).each do |factory|
           parts = PagePart.find :all, :include => :page,
                   :conditions => ['pages.page_factory = :factory AND page_parts.name NOT IN (:parts)',
                                   {:factory => factory.name, :parts => factory.parts.map(&:name)}]
@@ -23,8 +20,8 @@ class PageFactory
         end
       end
 
-      def sync!
-        PageFactory.descendants.each do |factory|
+      def sync!(page_factory=nil)
+        PageFactory.descendants.select(&by_factory(page_factory)).each do |factory|
           Page.find(:all, :include => :parts, :conditions => {:page_factory => factory.name}).each do |page|
             unsynced = lambda { |p| factory.parts.detect { |f| f.name.downcase == p.name.downcase and f.class != p.class } }
             unsynced_parts = page.parts.select(&unsynced)
@@ -35,6 +32,13 @@ class PageFactory
         end
       end
 
+      private
+
+        def by_factory(page_factory)
+          lambda do |subclass|
+            page_factory.blank? ? true : subclass.name == page_factory.to_s.camelcase
+          end
+        end
     end
   end
 end
