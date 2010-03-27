@@ -1,0 +1,3 @@
+.description
+  %span.info
+    = @page.page_factory.parts.detect { |p| p.name.downcase == page_part.name.downcase and p.class == page_part.class }.description

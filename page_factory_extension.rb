@@ -13,8 +13,10 @@ class PageFactoryExtension < Radiant::Extension
   
   def activate
     Page.send :include, PageFactory::PageExtensions
+    PagePart.send :include, PageFactory::PagePartExtensions
     Admin::PagesController.send :include, PageFactory::PagesControllerExtensions
     admin.pages.new.add :form, 'page_factory_field'
+    admin.pages.edit.add :part_controls, 'admin/page_parts/part_description'
 
     ([RADIANT_ROOT] + Radiant::Extension.descendants.map(&:root)).each do |path|
       Dir["#{path}/app/models/*_page_factory.rb"].each do |page_part|

@@ -7,6 +7,11 @@ class PageFactory
         end
         private_class_method :default_page_parts
       end
+      base.class_eval do
+        def page_factory
+          read_attribute(:page_factory).try :constantize
+        end
+      end
     end
   end
 end
