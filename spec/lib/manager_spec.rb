@@ -53,7 +53,12 @@ describe PageFactory::Manager do
       @other.reload.parts.should include(@old)
     end
 
-    it "should operate on Plain Old Pages"
+    it "should operate on Plain Old Pages" do
+      PageFactory.parts = [@old, @existing]
+      @plain.parts << extra = PagePart.new(:name => 'extra')
+      PageFactory::Manager.prune_parts! :PageFactory
+      @plain.reload.parts.should_not include(extra)
+    end
   end
   
   describe ".sync_parts!" do
@@ -114,7 +119,12 @@ describe PageFactory::Manager do
       @other.reload.parts.should include(c)
     end
 
-    it "should operate on Plain Old Pages"
+    it "should operate on Plain Old Pages" do
+      PageFactory.parts = [@new]
+      @plain.parts << SubPagePart.new(:name => 'new')
+      PageFactory::Manager.sync_parts! :PageFactory
+      @plain.reload.parts.detect { |p| p.name == 'new' }.class.should == PagePart
+    end
   end
 
   describe ".update_parts" do
@@ -143,7 +153,12 @@ describe PageFactory::Manager do
       @other.reload.parts.should == [e]
     end
 
-    it "should operate on Plain Old Pages"
+    it "should operate on Plain Old Pages" do
+      PageFactory.parts = [@new]
+      @plain.parts.should be_empty
+      PageFactory::Manager.update_parts :PageFactory
+      @plain.reload.parts.map(&:name).should include('new')
+    end
   end
   
   describe ".sync_layouts!" do
@@ -171,7 +186,12 @@ describe PageFactory::Manager do
       @other.reload.layout.should eql(layouts(:two))
     end
 
-    it "should operate on Plain Old Pages"
+    it "should operate on Plain Old Pages" do
+      @plain.layout = layouts(:one)
+      @plain.save
+      PageFactory::Manager.sync_layouts! :PageFactory
+      @plain.reload.layout.should be_nil
+    end
   end
 
   describe ".sync_classes!" do
@@ -189,6 +209,10 @@ describe PageFactory::Manager do
       pages(:other).should be_kind_of(Page)
     end
 
-    it "should operate on Plain Old Pages"
+    it "should operate on Plain Old Pages" do
+      pages(:plain).update_attribute :class_name, 'SubPage'
+      PageFactory::Manager.sync_classes! :PageFactory
+      pages(:plain).class.should == Page
+    end
   end
 end
