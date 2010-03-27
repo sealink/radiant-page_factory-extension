@@ -10,7 +10,7 @@ class PageFactory
       subclass.parts = @parts.dup
       subclass.layout = layout
       subclass.page_class = page_class
-      subclass.template_name = subclass.name.to_name('Page Factory')
+      subclass.template_name = subclass.name.to_name('Factory')
     end
 
     def part(name, attrs={})
