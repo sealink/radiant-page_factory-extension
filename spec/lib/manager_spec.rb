@@ -4,7 +4,7 @@ describe PageFactory::Manager do
   dataset do
     create_record :page, :managed, :title => 'managed', :slug => 'managed', :breadcrumb => 'managed', :page_factory => 'ManagedPageFactory'
     create_record :page, :plain, :title => 'plain', :slug => 'plain', :breadcrumb => 'plain'
-    create_record :page, :other, :title => 'other', :slug => 'other', :breadcrumb => 'other'
+    create_record :page, :other, :title => 'other', :slug => 'other', :breadcrumb => 'other', :page_factory => 'OtherPageFactory'
     create_record :page_part, :existing, :name => 'existing'
     create_record :page_part, :old, :name => 'old'
     create_record :page_part, :new, :name => 'new'
@@ -13,6 +13,9 @@ describe PageFactory::Manager do
   class ManagedPageFactory < PageFactory
     part 'existing'
     part 'new'
+  end
+
+  class OtherPageFactory < PageFactory
   end
 
   before do
@@ -53,30 +56,54 @@ describe PageFactory::Manager do
   end
   
   describe ".sync!" do
+    class AddPartClass < ActiveRecord::Migration
+      def self.up
+        add_column :page_parts, :part_class, :string
+        PagePart.reset_column_information
+      end
+
+      def self.down
+        remove_column :page_parts, :part_class
+        PagePart.reset_column_information
+      end
+    end
+
     class SubPagePart < PagePart ; end
 
-    before do
+    before :all do
+      ActiveRecord::Migration.verbose = false
+      AddPartClass.up
+      PagePart.class_eval do
+        set_inheritance_column :part_class
+      end
+    end
+
+    after :all do
+      AddPartClass.down
+      PagePart.class_eval do
+        set_inheritance_column nil
+      end
+    end
+
+    before :each do
       @part = SubPagePart.new(:name => 'new')
-      Page.stub!(:find).and_return([@managed])
       @managed.parts = [@part]
     end
 
     it "should delete parts whose classes don't match" do
-      @managed.parts.should_receive(:destroy).with([@part])
-      @managed.parts.should_receive(:destroy).with(any_args)  # don't complain about other loops
       PageFactory::Manager.sync!
+      @managed.reload.parts.should_not include(@new)
     end
 
     it "should replace parts whose classes don't match" do
-      @managed.parts.stub!(:destroy).and_return { @managed.parts.delete(@part) } # make sure mock actually removes the part
       PageFactory::Manager.sync!
-      @managed.parts.detect { |p| p.name == 'new' }.class.should == PagePart
+      @managed.reload.parts.detect { |p| p.name == 'new'}.class.should == PagePart
     end
 
     it "should leave synced parts alone" do
       @managed.parts = [@new]
       PageFactory::Manager.sync!
-      @managed.parts.should eql([@new])
+      @managed.reload.parts.should eql([@new])
     end
 
     it "should operate on a single factory"
