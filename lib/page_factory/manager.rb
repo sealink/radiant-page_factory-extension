@@ -38,6 +38,12 @@ class PageFactory
         end
       end
 
+      def sync_classes!(page_factory=nil)
+        PageFactory.descendants.select(&by_factory(page_factory)).each do |factory|
+          Page.update_all({:class_name => factory.page_class}, {:page_factory => factory.name})
+        end
+      end
+
       private
 
         def by_factory(page_factory)

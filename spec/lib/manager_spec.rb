@@ -151,10 +151,10 @@ describe PageFactory::Manager do
       create_record :layout, :one, :name => 'Layout One'
       create_record :layout, :two, :name => 'Layout Two'
     end
+    ManagedPageFactory.layout 'Layout One'
+    OtherPageFactory.layout 'Layout One'
 
     before do
-      ManagedPageFactory.layout 'Layout One'
-      OtherPageFactory.layout 'Layout One'
       @managed.layout = layouts(:two)
       @managed.save
     end
@@ -174,9 +174,21 @@ describe PageFactory::Manager do
     it "should operate on Plain Old Pages"
   end
 
-  describe "#update_classes!" do
-    it "should change page class to match factory"
-    it "should operate on a single factory"
+  describe "#sync_classes!" do
+    class SubPage < Page ; end
+    ManagedPageFactory.page_class 'SubPage'
+    OtherPageFactory.page_class 'SubPage'
+
+    it "should change page class to match factory" do
+      PageFactory::Manager.sync_classes!
+      pages(:managed).should be_kind_of(SubPage)
+    end
+
+    it "should operate on a single factory" do
+      PageFactory::Manager.sync_classes! :ManagedPageFactory
+      pages(:other).should be_kind_of(Page)
+    end
+
     it "should operate on Plain Old Pages"
   end
 end
