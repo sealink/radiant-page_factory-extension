@@ -70,6 +70,8 @@ It's called a "soft" refresh because it adds parts, but it won't change or remov
 
     $ rake radiant:extensions:page_factory:refresh:soft[employee]
 
+That argument is the name of my factory class minus "page_factory," because this rake task is already long enough.
+
 ### Removing parts
 
 The boss just changed her mind about displaying everyone's department. This always happens! No problem though, I can just as easily remove the extra part. I just remove it from my factory definition and run this task:
