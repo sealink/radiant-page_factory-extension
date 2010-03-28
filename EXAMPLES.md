@@ -62,21 +62,21 @@ I spent all day adding employee pages for each of my coworkers... and then my bo
 
 Luckily, I won't have to go back through each existing employee page to manually add a department part. I can run the following rake task:
 
-    $ rake radiant:extensions:page_factory:sync:soft
+    $ rake radiant:extensions:page_factory:refresh:soft
 
 This iterates over every page created with a factory and adds any parts that are listed in the page's factory but missing from the page. Now all of my existing Employee pages have been updated with an empty "department" part.
 
-It's called a "soft" sync because it adds parts, but it won't change or remove any content. If I had more than one factory and I only wanted to act on Employee pages, I could specify a particular factory:
+It's called a "soft" refresh because it adds parts, but it won't change or remove any content. If I had more than one factory and I only wanted to act on Employee pages, I could specify a particular factory:
 
-    $ rake radiant:extensions:page_factory:sync:soft factory=employee
+    $ rake radiant:extensions:page_factory:refresh:soft[employee]
 
 ### Removing parts
 
 The boss just changed her mind about displaying everyone's department. This always happens! No problem though, I can just as easily remove the extra part. I just remove it from my factory definition and run this task:
 
-    $ rake radiant:extensions:page_factory:sync:hard factory=employee
+    $ rake radiant:extensions:page_factory:refresh:hard[employee]
 
-Unlike a soft sync, a hard sync _will_ alter or remove content. In this case, it goes through all of my Employee pages and removes any parts that aren't listed in the factory definition.
+Unlike a soft refresh, a hard refresh _will_ alter or remove content. In this case, it goes through all of my Employee pages and removes any parts that aren't listed in the factory definition.
 
 ## Other factory options
 
@@ -93,7 +93,7 @@ Our very talented designer has just sent me the markup for the employee page. I'
                         :description => "..."
     end
 
-Now the Employee layout will be automatically selected whenever I create a new Employee page. If I want to update all of my previously created Employee pages to use this new layout, I can do this by running the hard sync task.
+Now the Employee layout will be automatically selected whenever I create a new Employee page. If I want to update all of my previously created Employee pages to use this new layout, I can do this by running the hard refresh task.
 
 ### Default page classes
 
@@ -103,7 +103,7 @@ Sometimes it might be useful to set a default page class, if for instance I have
       page_class "ArchivePage"
     end
 
-Again, I'd have to run the hard sync task to update any existing pages.
+Again, I'd have to run the hard refresh task to update any existing pages.
 
 ## Working with pages
 
@@ -115,6 +115,6 @@ Does this mean I need to create a new factory and recreate my own employee page?
 
 I can just open up my page and add a new 'photo url' part, then change the layout to one that accommodates a photo. The EmployeePageFactory doesn't care what happens to employee pages after they've been created. And if they ever find out I've been filching copy paper and revoke my award, I can just as easily remove that extra part and change the layout back to a normal employee layout.
 
-(I do have to be careful about running the hard sync task, however. That will remove my photo part, because it isn't defined in the factory, and reset my layout to the default employee layout. I can safely run it as long as I specify another factory name.)
+(I do have to be careful about running the hard refresh task, however. That will remove my photo part, because it isn't defined in the factory, and reset my layout to the default employee layout. I can safely run it as long as I specify another factory name.)
 
 I can also add a plain old page with no factory and add/delete parts as usual -- I don't have to rely on a factory for everything. This makes it easy to add individual pages whenever I want.
