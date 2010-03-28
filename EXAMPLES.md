@@ -18,7 +18,7 @@ I need to tell my factory what parts I want:
       part 'biography'
     end
 
-I reboot my server -- factories don't get reloaded in dev mode (yet) -- visit /admin/pages, and click "Add Child." Hey, there's a popup here asking me what kind of page to add! I select "Employee Page" and I'm taken to a new page. My first name, last name, and biography parts are waiting for me! Neat!
+I reboot my server -- factories don't get reloaded in dev mode (yet) -- visit /admin/pages, and click "Add Child." Hey, there's a popup here asking me what kind of page to add! I select "Employee Page" and I'm taken to a new page. The first name, last name, and biography parts are waiting for me! Neat!
 
 But I don't need the default "extended" part on my employees page. Let's get rid of it:
 
@@ -58,19 +58,17 @@ The helper text gets displayed right above the text field on the biography tab f
 
 ### Adding parts
 
-I spent all day adding employee pages for each of my coworkers... when my boss tells me that the pages need to show everyone's department. I add a 'department' part to my EmployeePageFactory, but this won't affect any employee pages I've already created.
+I spent all day adding employee pages for each of my coworkers... and then my boss tells me that the employee pages should list people's department. I add a 'department' part to my EmployeePageFactory, but this won't affect any employee pages I've already created.
 
 Luckily, I won't have to go back through each existing employee page to manually add a department part. I can run the following rake task:
 
     $ rake radiant:extensions:page_factory:sync:soft
 
-This iterates over every page created with a factory and adds any parts that are listed in the page's factory but missing from the page. It's called a "soft" sync because it will add parts, but it won't change or remove any content.
+This iterates over every page created with a factory and adds any parts that are listed in the page's factory but missing from the page. Now all of my existing Employee pages have been updated with an empty "department" part.
 
-If I had more than one factory and I didn't want to alter pages created with other factories, I could specific a single factory:
+It's called a "soft" sync because it adds parts, but it won't change or remove any content. If I had more than one factory and I only wanted to act on Employee pages, I could specify a particular factory:
 
     $ rake radiant:extensions:page_factory:sync:soft factory=employee
-
-Now all of my existing Employee pages will be updated to have an empty "department" part, and I didn't have to open any of them in a browser.
 
 ### Removing parts
 
@@ -84,7 +82,7 @@ Unlike a soft sync, a hard sync _will_ alter or remove content. In this case, it
 
 ### Default layouts
 
-Our very talented designer has just sent me the markup for the employee page. I'd like to put this in a layout so I can share among all the employee pages. I create a new layout called "Employee" and paste in the markup. I can make this the default layout by passing its name to the factory:
+Our very talented designer has just sent me the markup for the employee page. I'd like to put this in a layout and assign it to all the employee pages -- that way I only have to edit it in one place if there are changes later. I create a new layout called "Employee" and paste in the markup. I can make this the default layout by passing its name to the factory:
 
     class EmployeePageFactory < PageFactory
       layout "Employee"
@@ -104,6 +102,8 @@ Sometimes it might be useful to set a default page class, if for instance I have
     class ArchivePageFactory < PageFactory
       page_class "ArchivePage"
     end
+
+Again, I'd have to run the hard sync task to update any existing pages.
 
 ## Working with pages
 
