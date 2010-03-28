@@ -18,7 +18,7 @@ I need to tell my factory what parts I want:
       part 'biography'
     end
 
-I reboot my server -- factories don't get reloaded in dev mode (yet) -- visit /admin/pages, and click "Add Child." Hey, there's a popup here asking me what kind of page to add! I select "Employee Page" and I'm taken to a new page. The first name, last name, and biography parts are waiting for me! Neat!
+I visit /admin/pages, and click "Add Child." Hey, there's a popup here asking me what kind of page to add! I select "Employee Page" and I'm taken to a new page. The first name, last name, and biography parts are waiting for me! Neat!
 
 But I don't need the default "extended" part on my employees page. Let's get rid of it:
 
@@ -29,7 +29,7 @@ But I don't need the default "extended" part on my employees page. Let's get rid
       remove 'extended'
     end
 
-Bounce the server, repeat the steps to add a new page, and presto: no more "extended" part!
+Repeat the steps to add a new page, and the "extended" part is no longer taking up space.
 
 ## Additional part options
 
