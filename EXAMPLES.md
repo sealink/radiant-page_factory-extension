@@ -52,7 +52,7 @@ Now when I add a new Employee page, the biography field will be pre-populated wi
                         :description => "Please replace this with one or two paragraphs about yourself."
     end
 
-The helper text gets displayed right above the text field on the biography tab for all new pages.
+The helper text gets displayed right above the text field on the biography tab for all new Employee pages.
 
 ## Updating existing content
 
@@ -93,7 +93,7 @@ Our very talented designer has just sent me the markup for the employee page. I'
                         :description => "..."
     end
 
-Now the Employee layout will be automatically selected whenever I create a new Employee page. If I want to update all of my previously created Employee pages, I can do this by running the hard sync task.
+Now the Employee layout will be automatically selected whenever I create a new Employee page. If I want to update all of my previously created Employee pages to use this new layout, I can do this by running the hard sync task.
 
 ### Default page classes
 
