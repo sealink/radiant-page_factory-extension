@@ -46,6 +46,10 @@ There's a page that needs to look or behave just a little differently from other
 
 Page factories shouldn't have an opinion about any of those attributes until you tell it to take action on a page or set of pages.
 
+## Usage
+
+See EXAMPLES.md for a detailed walkthrough.
+
 ## Notes on implementation
 
 +   **Syncing.** Because I'm not exposing these factories in the admin UI, there's no need to do this in real-time. Unless explicitly asked, the methods responsible for altering existing content ignore Plain Old Pages so that you have at least one type of Page that's always open to modification and not in any danger of being overwritten.
