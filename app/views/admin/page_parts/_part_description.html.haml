@@ -1,4 +1,4 @@
 .description
   %span.info
-    - if @page.page_factory
-      = @page.page_factory.parts.detect { |p| p.name.downcase == page_part.name.downcase and p.class == page_part.class }.description
+    - if @page and not @page.page_factory.nil?
+      = @page.page_factory.parts.detect { |p| p.name.downcase == page_part.name.downcase and p.class == page_part.class }.try :description

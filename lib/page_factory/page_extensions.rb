@@ -14,7 +14,7 @@ class PageFactory
         #
         # @return [PageFactory, nil] This Page's initial PageFactory
         def page_factory
-          read_attribute(:page_factory).try :constantize
+          (factory = read_attribute(:page_factory)).blank? ? PageFactory : factory.constantize
         end
       end
     end
