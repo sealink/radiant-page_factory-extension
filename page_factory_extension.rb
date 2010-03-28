@@ -15,6 +15,8 @@ class PageFactoryExtension < Radiant::Extension
     Page.send :include, PageFactory::PageExtensions
     PagePart.send :include, PageFactory::PagePartExtensions
     Admin::PagesController.send :include, PageFactory::PagesControllerExtensions
+    Admin::PagesController.helper 'admin/part_description'
+    Admin::PagePartsController.helper 'admin/part_description'
     admin.pages.new.add :form, 'page_factory_field'
     admin.pages.edit.add :part_controls, 'admin/page_parts/part_description'
 

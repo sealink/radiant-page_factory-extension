@@ -30,7 +30,7 @@ describe Admin::PagesController do
 
     it "should set the new page's factory" do
       get :new, :page_factory => 'ControllerPageFactory'
-      assigns(:page).page_factory.should eql(ControllerPageFactory)
+      assigns(:page).page_factory.should eql('ControllerPageFactory')
     end
 
     it "should set the current factory" do
