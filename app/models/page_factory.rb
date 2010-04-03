@@ -1,7 +1,8 @@
 class PageFactory
   include Annotatable
-  annotate :template_name, :layout, :page_class
+  annotate :template_name, :layout, :page_class, :description
   template_name 'Page'
+  description 'A basic Radiant page.'
 
   class << self
     attr_accessor :parts, :current_factory

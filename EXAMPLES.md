@@ -82,6 +82,20 @@ Unlike a soft refresh, a hard refresh _will_ alter or remove content. In this ca
 
 ## Other factory options
 
+### Descriptions
+
+If you have a lot of factories, it might be helpful to add a description to each so that you remember what they're all used for.
+
+class EmployeePageFactory < PageFactory
+  description "An employee profile page."
+
+  part 'first name'
+  part 'last name'
+  ...
+end
+
+This description appears in the factory selection popup.
+
 ### Default layouts
 
 Our very talented designer has just sent me the markup for the employee page. I'd like to put this in a layout and assign it to all the employee pages -- that way I only have to edit it in one place if there are changes later. I create a new layout called "Employee" and paste in the markup. I can make this the default layout by passing its name to the factory:
