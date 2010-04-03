@@ -1,6 +1,6 @@
 .popup
   %h3.title= t('add_child')
-  - form_tag factory_link_for(@page), :method => :get do
+  - form_tag factory_link, :method => :get do
     %label{:for => 'page_page_factory'} Template:
     = select_tag :page_factory, options_for_select(factory_options)
     %p.buttons

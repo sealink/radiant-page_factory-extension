@@ -1,5 +1,5 @@
 module Admin::FactoryLinkHelper
-  def factory_link_for(page)
+  def factory_link(page=@page)
     page.nil? ? new_admin_page_path : new_admin_page_child_path(page)
   end
 
