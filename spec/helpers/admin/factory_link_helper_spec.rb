@@ -1,18 +1,24 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
 describe Admin::FactoryLinkHelper do
+  dataset :pages
   include Admin::FactoryLinkHelper
 
+  class ParamPageFactory < PageFactory
+  end
+
   it "should give a link for a new page" do
-    factory_link_for(nil).should eql(new_admin_page_path)
+    @page = nil
+    factory_link.should eql(new_admin_page_path)
   end
 
   it "should give a link for an existing page" do
-    factory_link_for(1).should eql(new_admin_page_child_path(1))
+    @page = pages(:home)
+    factory_link.should eql(new_admin_page_child_path(pages(:home)))
   end
 
-  it "should set value = blank for the base option" do
-    # e.g. [["Page", nil], ["Other", "OtherPageFactory"]]
-    factory_options.find { |f| f.first == 'Page' }.last.should be_nil
+  it "should create a link with a page_factory param" do
+    @page = pages(:home)
+    factory_link(ParamPageFactory).should eql(new_admin_page_child_path(pages(:home), :page_factory => 'ParamPageFactory'))
   end
 end

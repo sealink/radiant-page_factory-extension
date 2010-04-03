@@ -12,6 +12,11 @@ describe Admin::FactoryLinkController do
       get :new, :page => page_id(:home)
       assigns(:page).should eql(pages(:home))
     end
+
+    it "should expose factory list" do
+      get :new, :page => page_id(:home)
+      assigns(:factories).should include(PageFactory)
+    end
   end
 
 end
