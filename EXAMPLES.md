@@ -12,7 +12,7 @@ The first thing I'll do (after installing PageFactory and running `rake db:migra
 
 I need to tell my factory what parts I want:
 
-    class EmployeePageFactory < PageFactory
+    class EmployeePageFactory < PageFactory::Base
       part 'first name'
       part 'last name'
       part 'biography'
@@ -22,7 +22,7 @@ I visit /admin/pages, and click "Add Child." Hey, there's a popup here asking me
 
 But I don't need the default "extended" part on my employees page. Let's get rid of it:
 
-    class EmployeePageFactory < PageFactory
+    class EmployeePageFactory < PageFactory::Base
       part 'first name'
       part 'last name'
       part 'biography'
@@ -37,7 +37,7 @@ I'll be adding a page for each of my coworkers, but I want them to log in and fi
 
 I'll edit my page factory to add the dummy text:
 
-    class EmployeePageFactory < PageFactory
+    class EmployeePageFactory < PageFactory::Base
       part 'first name'
       part 'last name'
       part 'biography', :content => "Lorem ipsum dolor sit amet."
@@ -45,7 +45,7 @@ I'll edit my page factory to add the dummy text:
 
 Now when I add a new Employee page, the biography field will be pre-populated with this dummy text. But I want to make it clear that people should replace this with actual content. (Not all of my coworkers speak Latin.) I can add a little helper text that will be shown on the "biography" part tab, in order to explain what this part is used for:
 
-    class EmployeePageFactory < PageFactory
+    class EmployeePageFactory < PageFactory::Base
       part 'first name'
       part 'last name'
       part 'biography', :content => "Lorem ipsum dolor sit amet.",
@@ -86,7 +86,7 @@ Unlike a soft refresh, a hard refresh _will_ alter or remove content. In this ca
 
 If you have a lot of factories, it might be helpful to add a description to each so that you remember what they're all used for.
 
-class EmployeePageFactory < PageFactory
+class EmployeePageFactory < PageFactory::Base
   description "An employee profile page."
 
   part 'first name'
@@ -100,7 +100,7 @@ This description appears in the factory selection popup.
 
 Our very talented designer has just sent me the markup for the employee page. I'd like to put this in a layout and assign it to all the employee pages -- that way I only have to edit it in one place if there are changes later. I create a new layout called "Employee" and paste in the markup. I can make this the default layout by passing its name to the factory:
 
-    class EmployeePageFactory < PageFactory
+    class EmployeePageFactory < PageFactory::Base
       layout "Employee"
       
       part 'first name'
@@ -115,7 +115,7 @@ Now the Employee layout will be automatically selected whenever I create a new E
 
 Sometimes it might be useful to set a default page class, if for instance I have a page factory that deals with Archive pages. That's just as easy:
 
-    class ArchivePageFactory < PageFactory
+    class ArchivePageFactory < PageFactory::Base
       page_class "ArchivePage"
     end
 
