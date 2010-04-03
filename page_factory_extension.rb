@@ -7,7 +7,7 @@ class PageFactoryExtension < Radiant::Extension
 
   define_routes do |map|
     map.namespace :admin do |admin|
-      admin.factory_link '/pages/factory_link', :controller => 'factory_link', :action => 'new'
+      admin.factory_link '/pages/factories', :controller => 'page_factories', :action => 'index'
     end
   end
   

@@ -1,5 +1,5 @@
-class Admin::FactoryLinkController < ApplicationController
-  def new
+class Admin::PageFactoriesController < ApplicationController
+  def index
     @page = Page.find_by_id(params[:page])
     @factories = factories
     render :layout => false

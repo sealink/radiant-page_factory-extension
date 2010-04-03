@@ -1,8 +1,8 @@
 require File.dirname(__FILE__) + '/../../spec_helper'
 
-describe Admin::FactoryLinkHelper do
+describe Admin::PageFactoriesHelper do
   dataset :pages
-  include Admin::FactoryLinkHelper
+  include Admin::PageFactoriesHelper
 
   class ParamPageFactory < PageFactory
   end

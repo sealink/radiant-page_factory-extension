@@ -1,5 +1,5 @@
 .popup
   %h3.title= t('add_child')
   .reference
-    = render :collection => @factories, :partial => 'admin/factory_link/page_factory'
+    = render :collection => @factories, :partial => 'admin/page_factories/page_factory'
   %p.close_link= link_to_function t('cancel'), "$(this).closePopup()"
