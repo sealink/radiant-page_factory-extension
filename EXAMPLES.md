@@ -8,7 +8,7 @@ Rather than add these parts to every employee page, it would be nice if I could 
 
 ## Creating new factories
 
-The first thing I'll do (after installing PageFactory and running `rake db:migrate:extensions`) is to create a factory for "Employee" pages. I can do this with a file called "employee_page_factory.rb" in the /app/models directory of any extension.
+The first thing I'll do (after installing PageFactory and running `rake db:migrate:extensions`) is to create a factory for "Employee" pages. I'll create a file called "employee_page_factory.rb" (the `_page_factory` suffix is mandatory.) I can put this in the app/models/ or lib/ directory of any extension, or a lib/ directory at the root of my Radiant project.
 
 I need to tell my factory what parts I want:
 

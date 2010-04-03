@@ -20,11 +20,16 @@ class PageFactoryExtension < Radiant::Extension
     admin.pages.new.add :form, 'page_factory_field'
     admin.pages.edit.add :part_controls, 'admin/page_parts/part_description'
 
-    ([RADIANT_ROOT] + Radiant::Extension.descendants.map(&:root)).each do |path|
-      Dir["#{path}/app/models/*_page_factory.rb"].each do |page_factory|
+    factory_paths = [Rails.root.to_s + '/lib']
+    Radiant::Extension.descendants.inject factory_paths do |paths, ext|
+      paths << ext.root + '/app/models'
+      paths << ext.root + '/lib'
+    end
+    factory_paths.each do |path|
+      Dir["#{path}/*_page_factory.rb"].each do |page_factory|
         if page_factory =~ %r{/([^/]+)\.rb}
+          require_dependency page_factory
           ActiveSupport::Dependencies.explicitly_unloadable_constants << $1.camelize
-          $1.camelize.constantize
         end
       end
     end
