@@ -3,12 +3,12 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 describe Admin::PagesController do
   dataset :config, :users, :layouts
 
-  class ControllerPageFactory < PageFactory
+  class ControllerPageFactory < PageFactory::Base
     part 'alpha'
     part 'beta'
   end
 
-  class ArchivePageFactory < PageFactory
+  class ArchivePageFactory < PageFactory::Base
     layout 'UTF8'
     page_class 'ArchivePage'
   end

@@ -1,4 +1,4 @@
-class PageFactory
+module PageFactory
   module PagePartExtensions
     def self.included(base)
       base.class_eval do

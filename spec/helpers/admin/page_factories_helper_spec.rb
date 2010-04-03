@@ -4,7 +4,7 @@ describe Admin::PageFactoriesHelper do
   dataset :pages
   include Admin::PageFactoriesHelper
 
-  class ParamPageFactory < PageFactory
+  class ParamPageFactory < PageFactory::Base
   end
 
   it "should give a link for a new page" do

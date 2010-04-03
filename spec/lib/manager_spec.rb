@@ -10,12 +10,12 @@ describe PageFactory::Manager do
     create_record :page_part, :new, :name => 'new'
   end
 
-  class ManagedPageFactory < PageFactory
+  class ManagedPageFactory < PageFactory::Base
     part 'existing'
     part 'new'
   end
 
-  class OtherPageFactory < PageFactory
+  class OtherPageFactory < PageFactory::Base
     part 'new'
   end
 
@@ -54,7 +54,7 @@ describe PageFactory::Manager do
     end
 
     it "should operate on Plain Old Pages" do
-      PageFactory.parts = [@old, @existing]
+      PageFactory::Base.parts = [@old, @existing]
       @plain.parts << extra = PagePart.new(:name => 'extra')
       PageFactory::Manager.prune_parts! :PageFactory
       @plain.reload.parts.should_not include(extra)
@@ -120,7 +120,7 @@ describe PageFactory::Manager do
     end
 
     it "should operate on Plain Old Pages" do
-      PageFactory.parts = [@new]
+      PageFactory::Base.parts = [@new]
       @plain.parts << SubPagePart.new(:name => 'new')
       PageFactory::Manager.sync_parts! :PageFactory
       @plain.reload.parts.detect { |p| p.name == 'new' }.class.should == PagePart
@@ -154,7 +154,7 @@ describe PageFactory::Manager do
     end
 
     it "should operate on Plain Old Pages" do
-      PageFactory.parts = [@new]
+      PageFactory::Base.parts = [@new]
       @plain.parts.should be_empty
       PageFactory::Manager.update_parts :PageFactory
       @plain.reload.parts.map(&:name).should include('new')

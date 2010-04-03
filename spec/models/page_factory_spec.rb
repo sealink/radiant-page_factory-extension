@@ -2,15 +2,15 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe PageFactory do
   
-  class SubPageFactory < PageFactory
+  class SubPageFactory < PageFactory::Base
   end
 
   it "should have the default page parts" do
-    PageFactory.parts.should == Page.new_with_defaults(Radiant::Config).parts
+    PageFactory::Base.parts.should == Page.new_with_defaults(Radiant::Config).parts
   end
 
   it "should inherit page_parts" do
-    SubPageFactory.parts.should == PageFactory.parts
+    SubPageFactory.parts.should == PageFactory::Base.parts
   end
 
   it "should inherit page_class and layout" do
@@ -41,7 +41,7 @@ describe PageFactory do
   end
 
   describe '.remove' do
-    class FullPageFactory < PageFactory
+    class FullPageFactory < PageFactory::Base
       part 'one'
       part 'two'
     end
@@ -66,7 +66,7 @@ describe PageFactory do
   end
 
   describe ".current_factory" do
-    class DefinedPageFactory < PageFactory
+    class DefinedPageFactory < PageFactory::Base
       part 'alpha'
       part 'beta'
     end
@@ -83,7 +83,7 @@ describe PageFactory do
 
     it "should return base class by default" do
       PageFactory.current_factory = nil
-      PageFactory.current_factory.parts.should eql(PageFactory.parts)
+      PageFactory.current_factory.parts.should eql(PageFactory::Base.parts)
     end
 
     it "should should accept a string" do

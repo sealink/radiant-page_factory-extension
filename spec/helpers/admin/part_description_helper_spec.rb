@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 describe Admin::PartDescriptionHelper do
   include Admin::PartDescriptionHelper
 
-  class DescriptionPageFactory < PageFactory
+  class DescriptionPageFactory < PageFactory::Base
     part 'normal', :description => 'sub'
   end
 

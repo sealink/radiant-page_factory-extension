@@ -24,6 +24,6 @@ class Admin::PageFactoriesController < ApplicationController
     #   end
     #   alias_method_chain :factories, :permissions
     def factories
-      [PageFactory, *PageFactory.descendants.sort { |a,b| a.name <=> b.name }]
+      [PageFactory::Base, *PageFactory::Base.descendants.sort { |a,b| a.name <=> b.name }]
     end
 end

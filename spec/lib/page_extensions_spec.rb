@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe PageFactory::PageExtensions do
-  class OverridingPageFactory < PageFactory
+  class OverridingPageFactory < PageFactory::Base
     part 'alpha'
     part 'beta'
   end

@@ -15,7 +15,7 @@ describe Admin::PageFactoriesController do
 
     it "should expose factory list" do
       get :index, :page => page_id(:home)
-      assigns(:factories).should include(PageFactory)
+      assigns(:factories).should include(PageFactory::Base)
     end
   end
 

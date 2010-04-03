@@ -1,11 +1,11 @@
-class PageFactory
+class PageFactory::Base
   include Annotatable
   annotate :template_name, :layout, :page_class, :description
   template_name 'Page'
   description 'A basic Radiant page.'
 
   class << self
-    attr_accessor :parts, :current_factory
+    attr_accessor :parts
 
     def inherited(subclass)
       subclass.parts = @parts.dup
@@ -44,17 +44,6 @@ class PageFactory
       @parts.delete_if { |p| names.include? p.name.downcase }
     end
 
-    def current_factory
-      @current_factory || PageFactory
-    end
-
-    def current_factory=(factory)
-      factory = factory.constantize if factory.is_a?(String)
-      if factory.nil? or factory <= PageFactory
-        @current_factory = factory
-      end
-    end
-
     private
       def default_page_parts(config = Radiant::Config)
         default_parts = config['defaults.page.parts'].to_s.strip.split(/\s*,\s*/)
@@ -63,6 +52,6 @@ class PageFactory
         end
       end
   end
-  
+
   @parts = default_page_parts
 end
