@@ -19,6 +19,6 @@ describe Admin::FactoryLinkHelper do
 
   it "should create a link with a page_factory param" do
     @page = pages(:home)
-    factory_link(ParamPageFactory).should eql(new_admin_page_child_path(pages(:home), :page_factory => 'ParamPageFactory'))
+    factory_link(ParamPageFactory).should eql(new_admin_page_child_path(pages(:home), :factory => 'ParamPageFactory'))
   end
 end

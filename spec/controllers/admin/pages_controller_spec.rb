@@ -29,7 +29,7 @@ describe Admin::PagesController do
     end
 
     it "should set the new page's factory" do
-      get :new, :page_factory => 'ControllerPageFactory'
+      get :new, :factory => 'ControllerPageFactory'
       assigns(:page).page_factory.should eql('ControllerPageFactory')
     end
 
@@ -37,26 +37,26 @@ describe Admin::PagesController do
       PageFactory.should_receive(:current_factory=).with('ControllerPageFactory').ordered
       PageFactory.should_receive(:current_factory=).with(nil).ordered
       
-      get :new, :page_factory => 'ControllerPageFactory'
+      get :new, :factory => 'ControllerPageFactory'
     end
 
     it "should assign parts to @page based on the current factory" do
-      get :new, :page_factory => 'ControllerPageFactory'
+      get :new, :factory => 'ControllerPageFactory'
       assigns(:page).parts.map(&:name).should eql(%w(body extended alpha beta))
     end
 
     it "should not choke on bad factory names" do
-      get :new, :page_factory => 'BogusFactory'
+      get :new, :factory => 'BogusFactory'
       response.should be_success
     end
 
     it "should pass a layout" do
-      get :new, :page_factory => 'ArchivePageFactory'
+      get :new, :factory => 'ArchivePageFactory'
       assigns(:page).layout.should eql(layouts(:utf8))
     end
 
     it "should pass a page type" do
-      get :new, :page_factory => 'ArchivePageFactory'
+      get :new, :factory => 'ArchivePageFactory'
       assigns(:page).class_name.should eql('ArchivePage')
     end
   end

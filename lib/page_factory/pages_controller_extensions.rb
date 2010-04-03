@@ -11,7 +11,7 @@ class PageFactory
 
     def set_page_factory
       begin
-        PageFactory.current_factory = params[:page_factory]
+        PageFactory.current_factory = params[:factory]
       rescue NameError => e # bad factory name passed
         logger.error "Tried to create page with invalid factory: #{e.message}"
       ensure
