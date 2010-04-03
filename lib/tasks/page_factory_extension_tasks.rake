@@ -4,7 +4,11 @@ namespace :radiant do
 
       namespace :refresh do
         def factory_class(factory)
-          factory_class = factory.nil? ? nil : factory.capitalize + 'PageFactory'
+          factory_class = case factory
+          when '', nil : nil
+          when 'page', 'Page' : 'PageFactory'
+          else factory.capitalize + 'PageFactory'
+          end
         end
         task :update_parts, :factory, :needs => :environment do |task, args|
           updated = PageFactory::Manager.update_parts factory_class(args[:factory])
