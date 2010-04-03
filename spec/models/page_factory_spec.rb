@@ -58,6 +58,11 @@ describe PageFactory do
       EmptyPageFactory.remove 'TWO'
       EmptyPageFactory.parts.map(&:name).should_not include('two')
     end
+
+    it "should remove any number of parts" do
+      FullPageFactory.remove 'one', 'two'
+      FullPageFactory.parts.should be_empty
+    end
   end
 
   describe ".current_factory" do

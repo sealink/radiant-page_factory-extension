@@ -33,9 +33,14 @@ class PageFactory
     ##
     # Remove a part from this PageFactory
     #
-    # @param [String] name The name of the part to remove.
-    def remove(name)
-      @parts.delete_if { |p| name.downcase == p.name.downcase }
+    # @param [<String>] names Any number of part names to remove.
+    #
+    # @example
+    #   remove 'body'
+    #   remove 'body', 'extended'
+    def remove(*names)
+      names = names.map(&:downcase)
+      @parts.delete_if { |p| names.include? p.name.downcase }
     end
 
     def current_factory
