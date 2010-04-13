@@ -19,4 +19,28 @@ describe Admin::PageFactoriesController do
     end
   end
 
+  describe ".factory_link" do
+    class ParamPageFactory < PageFactory::Base
+    end
+
+    before :all do
+      Admin::PageFactoriesController.send :public, :factory_link
+    end
+
+    it "should give a link for a new page" do
+      controller.instance_variable_set :@page, nil
+      controller.factory_link.should eql(new_admin_page_path)
+    end
+
+    it "should give a link for an existing page" do
+      controller.instance_variable_set :@page, pages(:home)
+      controller.factory_link.should eql(new_admin_page_child_path(pages(:home)))
+    end
+
+    it "should create a link with a page_factory param" do
+      controller.instance_variable_set :@page, pages(:home)
+      controller.factory_link(ParamPageFactory).should eql(new_admin_page_child_path(pages(:home), :factory => 'ParamPageFactory'))
+    end
+  end
+
 end

@@ -1,4 +1,6 @@
 class Admin::PageFactoriesController < ApplicationController
+  helper_method :factory_link
+
   def index
     @page = Page.find_by_id(params[:page])
     @factories = factories
@@ -25,5 +27,10 @@ class Admin::PageFactoriesController < ApplicationController
     #   alias_method_chain :factories, :permissions
     def factories
       [PageFactory::Base, *PageFactory::Base.descendants.sort { |a,b| a.name <=> b.name }]
+    end
+
+    def factory_link(factory=PageFactory::Base)
+      args = { :factory => factory < PageFactory::Base ? factory : nil }
+      @page.nil? ? new_admin_page_path(args) : new_admin_page_child_path(@page, args)
     end
 end
