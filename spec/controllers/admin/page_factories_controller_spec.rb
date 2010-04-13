@@ -3,6 +3,9 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 describe Admin::PageFactoriesController do
   dataset :users, :pages
 
+  class ParamPageFactory < PageFactory::Base
+  end
+
   before do
     login_as :admin
   end
@@ -17,12 +20,23 @@ describe Admin::PageFactoriesController do
       get :index, :page => page_id(:home)
       assigns(:factories).should include(PageFactory::Base)
     end
+
+    describe "headers[Location]" do
+      it "should be empty when there are multiple factories" do
+        @controller.stub!(:factories).and_return([PageFactory::Base, ParamPageFactory])
+        get :index, :page => pages(:home)
+        response.headers['Location'].should be_nil
+      end
+
+      it "should be a factory link when only one factory is present" do
+        @controller.stub!(:factories).and_return([ParamPageFactory])
+        get :index, :page => pages(:home)
+        response.headers['Location'].should eql(new_admin_page_child_path(pages(:home), :factory => ParamPageFactory))
+      end
+    end
   end
 
   describe ".factory_link" do
-    class ParamPageFactory < PageFactory::Base
-    end
-
     before :all do
       Admin::PageFactoriesController.send :public, :factory_link
     end

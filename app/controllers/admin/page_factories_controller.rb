@@ -4,6 +4,7 @@ class Admin::PageFactoriesController < ApplicationController
   def index
     @page = Page.find_by_id(params[:page])
     @factories = factories
+    headers['Location'] = factory_link(@factories.first) if 1 == @factories.size
     render :layout => false
   end
 
