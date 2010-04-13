@@ -7,7 +7,7 @@ Popup.PageFactoryTriggerBehavior = Behavior.create(Popup.TriggerBehavior, {
 Popup.PageFactoryWindow = Class.create(Popup.AjaxWindow, {
   show: function($super) {
       new Ajax.Updater(this.content, this.url, {asynchronous: false, method: "get", evalScripts: true,
-                         onComplete: function(response) { (response.getHeader('Location') ? window.location.href = response.getHeader('Location') : $super() )}
+                         onComplete: function(response) { response.getHeader('Location') ? window.location.href = response.getHeader('Location') : $super() }
                        })
   },
 });
