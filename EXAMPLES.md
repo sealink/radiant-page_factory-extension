@@ -86,13 +86,13 @@ Unlike a soft refresh, a hard refresh _will_ alter or remove content. In this ca
 
 If you have a lot of factories, it might be helpful to add a description to each so that you remember what they're all used for.
 
-class EmployeePageFactory < PageFactory::Base
-  description "An employee profile page."
+    class EmployeePageFactory < PageFactory::Base
+      description "An employee profile page."
 
-  part 'first name'
-  part 'last name'
-  ...
-end
+      part 'first name'
+      part 'last name'
+      ...
+    end
 
 This description appears in the factory selection popup.
 
