@@ -34,14 +34,6 @@ describe Admin::PartDescriptionHelper do
     description_for(part).should be_blank
   end
 
-  it "should recover from a missing factory" do
-    # descriptions are the only place we ever refer to a page's factory while
-    # the app is running. since it's possible that a factory was removed or
-    # renamed, it would be nice to not blow up on it.
-    @page.page_factory = 'BogusPageFactory'
-    description_for(@part).should be_blank
-  end
-
   private
 
     def logger
