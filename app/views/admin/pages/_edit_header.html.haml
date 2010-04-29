@@ -1,1 +1,1 @@
-%h1== New #{PageFactory.current_factory.template_name}
+%h1== #{controller.template_name.capitalize} #{(@page.page_factory || PageFactory::Base).template_name}
