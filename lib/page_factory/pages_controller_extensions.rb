@@ -3,6 +3,7 @@ module PageFactory
     def self.included(base)
       base.class_eval do
         around_filter :set_page_factory, :only => :new
+        before_filter { |c| c.include_stylesheet 'admin/page_factory' }
         responses do |r|
           r.singular.default { set_page_defaults if 'new' == action_name }
         end
