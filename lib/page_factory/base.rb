@@ -44,12 +44,33 @@ class PageFactory::Base
       @parts.delete_if { |p| names.include? p.name.downcase }
     end
 
+    def descendants
+      load_descendants
+      super
+    end
+
     private
       def default_page_parts(config = Radiant::Config)
         default_parts = config['defaults.page.parts'].to_s.strip.split(/\s*,\s*/)
         default_parts.map do |name|
           PagePart.new(:name => name, :filter_id => config['defaults.page.filter'])
         end
+      end
+
+      def load_descendants
+        factory_paths = Radiant::Extension.descendants.inject [Rails.root.to_s + '/lib'] do |paths, ext|
+          paths << ext.root + '/app/models'
+          paths << ext.root + '/lib'
+        end
+        factory_paths.each do |path|
+          Dir["#{path}/*_page_factory.rb"].each do |page_factory|
+            if page_factory =~ %r{/([^/]+)\.rb}
+              require_dependency page_factory
+              ActiveSupport::Dependencies.explicitly_unloadable_constants << $1.camelize
+            end
+          end
+        end
+
       end
   end
 
