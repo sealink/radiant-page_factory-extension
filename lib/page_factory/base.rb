@@ -58,16 +58,19 @@ class PageFactory::Base
       end
 
       def load_descendants
-        factory_paths = Radiant::Extension.descendants.inject [Rails.root.to_s + '/lib'] do |paths, ext|
-          paths << ext.root + '/app/models'
-          paths << ext.root + '/lib'
-        end
-        factory_paths.each do |path|
-          Dir["#{path}/*_page_factory.rb"].each do |page_factory|
-            if page_factory =~ %r{/([^/]+)\.rb}
-              require_dependency page_factory
-              ActiveSupport::Dependencies.explicitly_unloadable_constants << $1.camelize
+        unless @_descendants_loaded
+          factory_paths = Radiant::Extension.descendants.inject [Rails.root.to_s + '/lib'] do |paths, ext|
+            paths << ext.root + '/app/models'
+            paths << ext.root + '/lib'
+          end
+          factory_paths.each do |path|
+            Dir["#{path}/*_page_factory.rb"].each do |page_factory|
+              if page_factory =~ %r{/([^/]+)\.rb}
+                require_dependency page_factory
+                ActiveSupport::Dependencies.explicitly_unloadable_constants << $1.camelize
+              end
             end
+            @_descendants_loaded = true
           end
         end
 
