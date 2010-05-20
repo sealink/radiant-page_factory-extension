@@ -4,8 +4,13 @@ class Admin::PageFactoriesController < ApplicationController
   def index
     @page = Page.find_by_id(params[:page])
     @factories = factories
-    headers['Location'] = factory_link(@factories.first) if 1 == @factories.size
-    render :layout => false
+
+    respond_to do |format|
+      format.html { render :partial => '/admin/page_factories/page_factory', :collection => @factories }
+      format.js { render :partial => '/admin/page_factories/page_factory', :collection => @factories }
+      format.json { render :json => @factories.to_json() }
+      format.xml { render :json => @factories.to_xml() }
+    end
   end
 
   private
