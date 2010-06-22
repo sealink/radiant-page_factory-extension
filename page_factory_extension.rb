@@ -3,7 +3,7 @@ require_dependency 'application_controller'
 class PageFactoryExtension < Radiant::Extension
   version "0.1"
   description "A small DSL for intelligently defining content types."
-  url "http://github.com/jfrench/radiant-page_factory-extension"
+  url "http://github.com/joshfrench/radiant-page_factory-extension"
   
   define_routes do |map|
     map.namespace :admin do |admin|
