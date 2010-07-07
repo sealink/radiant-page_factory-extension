@@ -1,3 +1,4 @@
-%ul.menu{:id => "add_child_dropdown"}
-  %li
-    %a= link_to PageFactory::Base.template_name, new_admin_page_path, :title => PageFactory::Base.description
+- unless @pages.blank?
+  %ul.menu{:id => "add_child_dropdown"}
+    %li
+      %a= link_to PageFactory::Base.template_name, new_admin_page_path, :title => PageFactory::Base.description
