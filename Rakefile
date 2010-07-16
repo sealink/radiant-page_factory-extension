@@ -3,14 +3,14 @@ begin
   Jeweler::Tasks.new do |gem|
     gem.name = "radiant-page_factory-extension"
     gem.summary = %Q{Page Factory Extension for Radiant CMS}
-    gem.description = %Q{Describe your extension here}
-    gem.email = "your email"
-    gem.homepage = "http://yourwebsite.com/page_factory"
-    gem.authors = ["Your Name"]
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
+    gem.description = %Q{Page Factory is a small DSL for intelligently defining content types in Radiant CMS.}
+    gem.email = "josh@vitamin-j.com"
+    gem.homepage = "http://github.com/joshfrench/radiant-page_factory-extension"
+    gem.authors = ["Josh French"]
+    gem.add_dependency 'radiant', '~> 0.9.0'
   end
 rescue LoadError
-  puts "Jeweler (or a dependency) not available. This is only required if you plan to package page_factory as a gem."
+  puts "Jeweler (or a dependency) not available. This is only required if you plan to package page-factory as a gem."
 end
 
 # In rails 1.2, plugins aren't available in the path until they're loaded.
