@@ -1,7 +1,7 @@
 require_dependency 'application_controller'
 
 class PageFactoryExtension < Radiant::Extension
-  version "0.1"
+  version YAML::load_file(File.join(File.dirname(__FILE__), 'VERSION'))
   description "A small DSL for intelligently defining content types."
   url "http://github.com/joshfrench/radiant-page_factory-extension"
   
