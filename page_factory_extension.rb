@@ -19,7 +19,6 @@ class PageFactoryExtension < Radiant::Extension
     Admin::PagePartsController.helper 'admin/part_description'
     admin.pages.new.add :form, 'page_factory_field'
     admin.pages.edit.add :part_controls, 'admin/page_parts/part_description'
-    admin.pages.index.add :bottom, 'admin/pages/page_factories'
     ActiveSupport::Dependencies.load_paths << File.join(Rails.root, 'lib')
   end
 end

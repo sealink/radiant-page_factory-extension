@@ -10,6 +10,11 @@ There are three basic questions when dealing with content types in any CMS:
 
 Page Factory is meant to address the first point, defining pages. Templating and versioning can be achieved with existing extensions and don't need to be reinvented. I like the combination of Nested Layouts and File System Resources, but the goal is to create an extension that's agnostic on those matters.
 
+## Installation
+
+Radiant 0.9.0 and 0.9.1 require PageFactory 1.0.1 (gem version preferred.)
+For anything higher, please use PageFactory 1.1.0 or higher.
+
 ## Goals
 
 I'm using the word "Factory" very deliberately. A traditional "content type" is a model that's attached to a page for the page's entire lifespan. To some extent, the content type dictates what you can and cannot do with that page.

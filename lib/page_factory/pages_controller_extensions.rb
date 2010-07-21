@@ -6,8 +6,8 @@ module PageFactory
         before_filter { |c| c.include_stylesheet 'admin/dropdown' }
         before_filter { |c| c.include_javascript 'admin/dropdown' }
         before_filter { |c| c.include_javascript 'admin/pagefactory' }
-        responses do |r|
-          r.singular.default { set_page_defaults if 'new' == action_name }
+        responses.new.default do
+          set_page_defaults
         end
       end
     end
