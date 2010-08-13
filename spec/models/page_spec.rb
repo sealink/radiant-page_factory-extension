@@ -1,27 +1,24 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
+class PageSpecPage < Page
+end
+
 describe Page do
-  class ConstantizedPageFactory < PageFactory::Base
-  end
-
-  before do
-    @page = Page.new
-  end
-
-  describe ".page_factory" do
-    it "should constantize the factory" do
-      @page.page_factory = 'ConstantizedPageFactory'
-      @page.page_factory.should eql(ConstantizedPageFactory)
+  describe '.part' do
+    it "should add a part to page_parts" do
+      PageSpecPage.part 'Sidebar'
+      PageSpecPage.parts.find { |p| p.name == 'Sidebar'}.should be_a(PagePart)
     end
 
-    it "should return nil if no factory is set" do
-      @page.page_factory = nil
-      @page.page_factory.should be_nil
+    it "should add a part with attributes" do
+      PageSpecPage.part 'Filtered', :filter_id => 'markdown'
+      PageSpecPage.parts.find { |p| p.name == 'Filtered'}.filter_id.should eql('markdown')
     end
 
-    it "should not blow up if the factory has gone missing" do
-      @page.page_factory = 'BogusPageFactory'
-      @page.page_factory.should be_nil
+    it "should override a part" do
+      PageSpecPage.part 'Override', :filter_id => 'old id'
+      PageSpecPage.part 'Override', :filter_id => 'new id'
+      PageSpecPage.parts.find { |p| p.name == 'Override'}.filter_id.should eql('new id')
     end
   end
 end

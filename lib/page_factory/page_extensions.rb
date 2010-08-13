@@ -1,25 +1,39 @@
 module PageFactory
   module PageExtensions
+
     def self.included(base)
       base.instance_eval do
-        def default_page_parts(config=Radiant::Config)
-          PageFactory.current_factory.parts
+        annotate :description
+        class_inheritable_array_writer :parts, :instance_writer => false
+        self.parts = default_page_parts
+
+        def layout(name = nil)
+          @layout = name || @layout
         end
-        private_class_method :default_page_parts
+
+        def parts
+          read_inheritable_attribute :parts
+        end
+
+        def default_page_parts_with_factory(config = Radiant::Config)
+          self.parts
+        end
+
+        def part(name, attrs={})
+          remove name.to_s
+          self.parts << PagePart.new(attrs.merge(:name => name.to_s))
+        end
+
+        def remove(*names)
+          names = names.map(&:to_s).map(&:downcase)
+          self.parts.delete_if { |p| names.include? p.name.to_s.downcase }
+        end
       end
-      base.class_eval do
-        ##
-        # The PageFactory that was used to create this page. Note that Plain
-        #   Old Pages do not have an assigned factory.
-        #
-        # @return [PageFactory, nil] This Page's initial PageFactory
-        def page_factory
-          (factory = read_attribute(:page_factory)).blank? ? nil : factory.constantize
-        rescue NameError => e # @page.page_factory is not a constant. class was removed?
-          logger.warn "Couldn't find page factory: #{e.message}"
-          nil
-        end
+
+      class << base
+        alias_method_chain :default_page_parts, :factory
       end
     end
+
   end
 end
