@@ -2,10 +2,6 @@ module PageFactory
   module PagesControllerExtensions
     def self.included(base)
       base.class_eval do
-        responses.new.default do
-           initialize_layout
-         end
-
         def model_name
           model_class.base_class.name
         end
@@ -23,10 +19,12 @@ module PageFactory
           end
         end
         alias_method_chain :model_class, :factory
+        alias_method_chain :assign_page_attributes, :factory
       end
     end
 
-    def initialize_layout
+    def assign_page_attributes_with_factory
+      assign_page_attributes_without_factory
       model.layout = Layout.find_by_name(model_class.layout)
     end
   end
