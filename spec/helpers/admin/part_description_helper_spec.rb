@@ -3,29 +3,24 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 describe Admin::PartDescriptionHelper do
   include Admin::PartDescriptionHelper
 
-  class DescriptionPageFactory < PageFactory::Base
-    part 'normal', :description => 'sub'
+  class DescriptionHelperSpecPage < Page
+    part 'normal', :description => 'desc'
   end
 
   class DescriptionPart < PagePart ; end
 
   before do
-    @page = Page.new :page_factory => 'DescriptionPageFactory'
+    @page = DescriptionHelperSpecPage.new
     @part = PagePart.new :name => 'normal'
   end
 
-  it "should get description from page factory" do
-    description_for(@part).should eql('sub')
+  it "should get description from Page.parts array" do
+    description_for(@part).should eql('desc')
   end
 
   it "should return nothing if page is unset" do
     # as is the case when adding parts
     @page = nil
-    description_for(@part).should be_blank
-  end
-
-  it "should return nothing if factory is unset" do
-    @page.page_factory = nil
     description_for(@part).should be_blank
   end
 

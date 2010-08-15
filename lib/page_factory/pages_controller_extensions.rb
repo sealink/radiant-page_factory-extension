@@ -8,7 +8,7 @@ module PageFactory
 
         def model_class_with_factory
           @model_class ||= begin
-            if params[:page_class] && (klass = params[:page_class].constantize) <= Page
+            if params[:page_class] && (klass = params.delete(:page_class).constantize) <= model_class_without_factory
               klass
             else
               model_class_without_factory
