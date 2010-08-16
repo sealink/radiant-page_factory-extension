@@ -3,7 +3,6 @@ module PageFactory
 
     def self.included(base)
       base.instance_eval do
-        annotate :description
         class_inheritable_array_writer :parts, :instance_writer => false
         self.parts = default_page_parts
 
