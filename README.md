@@ -13,7 +13,7 @@ Page Factory is meant to address the first point, defining pages. Templating and
 ## Installation
 
 Radiant 0.9.0 and 0.9.1 require PageFactory 1.0.1 (gem version preferred.)
-For anything higher, please use PageFactory 1.1.0 or higher.
+For Radiant edge (> 0.9.1) please use PageFactory 1.1.1.
 
 ## Goals
 
