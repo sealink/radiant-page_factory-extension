@@ -1,0 +1,3 @@
+%p
+  = f.label :class_name, t('page_type')
+  = f.select :class_name, [[t('select.normal'), '']] + Page.descendants.map { |p| [p.display_name, p.name] }.sort_by { |p| p.first }
