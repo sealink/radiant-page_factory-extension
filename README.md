@@ -12,8 +12,12 @@ Page Factory is meant to address the first point, defining pages. Templating and
 
 ## Installation
 
-Radiant 0.9.0 and 0.9.1 require PageFactory 1.0.1 (gem version preferred.)
-For anything higher, please use PageFactory 1.1.0 or higher.
+Radiant 0.9.0/0.9.1: use PageFactory 1.0.1 (gem version preferred.)
+
+Radiant > 0.9.1: use PageFactory 1.1.0 (vendored) and deactivate the core
+PageMenu extension in config/environment.rb:
+
+    config.extensions -= [:page_menu]
 
 ## Goals
 
