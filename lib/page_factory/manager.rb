@@ -22,11 +22,11 @@ module PageFactory
       #
       # @param [nil, String, Symbol, #to_s] page_factory The PageFactory to
       #   restrict this operation to, or nil to run it on all PageFactories.
-      def prune_parts!(page_factory=nil)
-        select_factories(page_factory).each do |factory|
+      def prune_parts!(klass=nil)
+        select_class(klass).each do |subclass|
           parts = PagePart.scoped(:include => :page).
-                           scoped(:conditions => {'pages.page_factory' => name_for(factory)}).
-                           scoped(:conditions => ['page_parts.name NOT IN (?)', factory.parts.map(&:name)])
+                           scoped(:conditions => {'pages.class_name' => name_for(subclass)}).
+                           scoped(:conditions => ['page_parts.name NOT IN (?)', subclass.parts.map(&:name)])
           PagePart.destroy parts
         end
       end
@@ -39,11 +39,11 @@ module PageFactory
       #
       # @param [nil, String, Symbol, #to_s] page_factory The PageFactory to
       #   restrict this operation to, or nil to run it on all PageFactories.
-      def update_parts(page_factory=nil)
-        select_factories(page_factory).each do |factory|
-          Page.find(:all, :include => :parts, :conditions => {:page_factory => name_for(factory)}).each do |page|
-            existing = lambda { |f| page.parts.detect { |p| f.name.downcase == p.name.downcase } }
-            page.parts.create factory.parts.reject(&existing).map(&:attributes)
+      def update_parts(klass=nil)
+        select_class(klass).each do |subclass|
+          Page.find(:all, :include => :parts, :conditions => {:class_name => name_for(subclass)}).each do |page|
+            existing = lambda { |s| page.parts.detect { |p| s.name.downcase == p.name.downcase } }
+            page.parts.create subclass.parts.reject(&existing).map(&:attributes)
           end
         end
       end
@@ -57,14 +57,14 @@ module PageFactory
       #
       # @param [nil, String, Symbol, #to_s] page_factory The PageFactory to
       #   restrict this operation to, or nil to run it on all PageFactories.
-      def sync_parts!(page_factory=nil)
-        select_factories(page_factory).each do |factory|
-          Page.find(:all, :include => :parts, :conditions => {:page_factory => name_for(factory)}).each do |page|
-            unsynced = lambda { |p| factory.parts.detect { |f| f.name.downcase == p.name.downcase and f.class != p.class } }
+      def sync_parts!(klass=nil)
+        select_class(klass).each do |subclass|
+          Page.find(:all, :include => :parts, :conditions => {:class_name => name_for(subclass)}).each do |page|
+            unsynced = lambda { |p| subclass.parts.detect { |s| s.name.downcase == p.name.downcase and s.class != p.class } }
             unsynced_parts = page.parts.select(&unsynced)
             page.parts.destroy unsynced_parts
-            needs_update = lambda { |f| unsynced_parts.map(&:name).include? f.name }
-            page.parts.create factory.parts.select(&needs_update).map &:attributes
+            needs_update = lambda { |s| unsynced_parts.map(&:name).include? s.name }
+            page.parts.create subclass.parts.select(&needs_update).map &:attributes
           end
         end
       end
@@ -77,43 +77,20 @@ module PageFactory
       #
       # @param [nil, String, Symbol, #to_s] page_factory The PageFactory to
       #   restrict this operation to, or nil to run it on all PageFactories.
-      def sync_layouts!(page_factory=nil)
-        select_factories(page_factory).each do |factory|
-          Page.update_all({:layout_id => Layout.find_by_name(factory.layout, :select => :id).try(:id)}, {:page_factory => name_for(factory)})
-        end
-      end
-
-      ##
-      # Update the Page class of all pages initially created by a PageFactory
-      #   to match the class currently specified on that PageFactory. Useful
-      #   when you assign a new page class to a PageFactory and you want your
-      #   existing content to reflect that change.
-      #
-      # @param [nil, String, Symbol, #to_s] page_factory The PageFactory to
-      #   restrict this operation to, or nil to run it on all PageFactories.
-      def sync_classes!(page_factory=nil)
-        select_factories(page_factory).each do |factory|
-          Page.update_all({:class_name => factory.page_class}, {:page_factory => name_for(factory)})
+      def sync_layouts!(klass=nil)
+        select_class(klass).each do |subclass|
+          Page.update_all({:layout_id => Layout.find_by_name(subclass.layout, :select => :id).try(:id)}, {:class_name => name_for(subclass)})
         end
       end
 
       private
 
-        def select_factories(page_factory)
-          [PageFactory::Base, *PageFactory::Base.descendants].select do |klass|
-            case page_factory
-            when '', nil
-              klass.name != 'PageFactory::Base'
-            when 'PageFactory', :PageFactory
-              klass.name == 'PageFactory::Base'
-            else 
-              klass.name == page_factory.to_s.camelcase
-            end
-          end
+        def select_class(klass)
+          klass.blank? ? [Page, *Page.descendants] : [klass.to_s.camelcase.constantize]
         end
 
-        def name_for(factory)
-          factory == PageFactory::Base ? nil : factory.name
+        def name_for(klass)
+          klass == Page ? nil : klass.name
         end
     end
   end
