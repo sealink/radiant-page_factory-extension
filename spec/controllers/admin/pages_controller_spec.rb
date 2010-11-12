@@ -3,6 +3,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 class ControllerSpecPage < Page
   layout 'UTF8'
   part 'new_part'
+  field 'field'
 end
 
 describe Admin::PagesController do
@@ -39,6 +40,10 @@ describe Admin::PagesController do
 
       it "should assign parts to @page based on the class" do
         assigns(:page).parts.map(&:name).should include('new_part')
+      end
+
+      it "should assign fields" do
+        assigns(:page).fields.map(&:name).should include('field')
       end
 
       it "should set a layout" do

@@ -70,6 +70,24 @@ module PageFactory
       end
 
       ##
+      # Add any fields defined on a Page class to all pages of that class,
+      #   should those fields be missing. This can be useful when you've added
+      #   a field to a Page class and you want your existing content to reflect
+      #   that change.
+      #
+      # @param [nil, String, Symbol, #to_s] klass The Page class to restrict
+      #   this operation to. Can be nil, in which case Page and all of its
+      #   subclasses are updated.
+      def update_fields(klass=nil)
+        select_class(klass).each do |subclass|
+          Page.find(:all, :include => :fields, :conditions => {:class_name => name_for(subclass)}).each do |page|
+            existing = lambda { |s| page.fields.detect { |p| s.name.downcase == p.name.downcase } }
+            page.fields.create subclass.fields.reject(&existing).map(&:attributes)
+          end
+        end
+      end
+
+      ##
       # Update the layout of all pages initially created by a PageFactory to
       #   match the layout currently specified on that PageFactory. Used when
       #   you decide to use a new layout in a PageFactory and you want your

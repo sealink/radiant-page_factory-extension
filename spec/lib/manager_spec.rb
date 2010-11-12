@@ -8,16 +8,18 @@ describe PageFactory::Manager do
     create_record :page_part, :existing, :name => 'existing'
     create_record :page_part, :old, :name => 'old'
     create_record :page_part, :new, :name => 'new'
+    create_record :page_field, :field, :name => 'field'
   end
 
   class ManagedPage < Page
     part 'existing'
     part 'new'
+    field 'field'
   end
 
   before do
-    @managed, @plain, @existing, @old, @new =
-    pages(:managed), pages(:plain), page_parts(:existing), page_parts(:old), page_parts(:new)
+    @managed, @plain, @existing, @old, @new, @field =
+    pages(:managed), pages(:plain), page_parts(:existing), page_parts(:old), page_parts(:new), page_fields(:field)
   end
 
   describe ".prune_parts!" do
@@ -129,10 +131,29 @@ describe PageFactory::Manager do
   end
 
   describe ".update_fields" do
-    it "should add missing fields"
-    it "should not duplicate existing fields"
-    it "should not replace matching fields"
-    it "should operate on a single subclass"
+    it "should add missing fields" do
+      @managed.parts.should be_empty
+      PageFactory::Manager.update_fields
+      @managed.fields.reload.map(&:name).should include('field')
+    end
+
+    it "should not duplicate existing fields" do
+      @managed.fields.concat [@field]
+      lambda { PageFactory::Manager.update_fields }.should_not change(@managed.parts, :size)
+    end
+
+    it "should not replace matching fields" do
+      @managed.fields.concat [@field]
+      PageFactory::Manager.update_fields
+      @managed.reload
+      @managed.fields.should include(@field)
+    end
+
+    it "should operate on a single subclass" do
+      @plain.fields = [f = @field.clone]
+      PageFactory::Manager.update_fields
+      @plain.reload.fields.should == [f]
+    end
   end
   
   describe ".sync_layouts!" do
