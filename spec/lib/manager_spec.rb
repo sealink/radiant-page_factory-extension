@@ -130,6 +130,29 @@ describe PageFactory::Manager do
     end
   end
 
+  describe ".prune_fields!" do
+    it "should remove vestigial fields" do
+      @managed.fields << f = PageField.new(:name => "old")
+      PageFactory::Manager.prune_fields!
+      @managed.fields.reload.should_not include(f)
+    end
+
+    it "should leave listed fields alone" do
+     @managed.fields.concat [@field, PageField.new(:name => "old")]
+     PageFactory::Manager.prune_fields!
+     @managed.fields.reload.should == [@field]
+    end
+
+    it "should operate on a single subclass" do
+      f = PageField.new(:name => "old")
+      @managed.fields.concat [f]
+      @plain.fields.concat [c = f.clone]
+      PageFactory::Manager.prune_fields!
+      @plain.fields.should include(c)
+      @managed.fields.should_not include(f)
+    end
+  end
+
   describe ".update_fields" do
     it "should add missing fields" do
       @managed.parts.should be_empty

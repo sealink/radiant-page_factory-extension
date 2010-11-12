@@ -87,6 +87,16 @@ module PageFactory
         end
       end
 
+      def prune_fields!(klass=nil)
+        select_class(klass).each do |subclass|
+          fields = Page.scoped(:include => :fields).
+                        scoped(:conditions => {:class_name => name_for(subclass)}).
+                        scoped(:conditions => ['page_fields.name NOT IN (?)', subclass.fields.map(&:name)]).
+                        map(&:fields).flatten
+          PageField.destroy fields
+        end
+      end
+
       ##
       # Update the layout of all pages initially created by a PageFactory to
       #   match the layout currently specified on that PageFactory. Used when
