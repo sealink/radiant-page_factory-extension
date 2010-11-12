@@ -15,7 +15,7 @@ describe PageFactory::PageExtensions do
   end
 
   after :all do
-    Page.remove_part :original
+    Page.remove_part :part
   end
 
   it "should inherit page.default.parts" do

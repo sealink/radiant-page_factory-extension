@@ -2,8 +2,7 @@ require File.dirname(__FILE__) + '/../../spec_helper'
 
 class ControllerSpecPage < Page
   layout 'UTF8'
-  part 'alpha'
-  part 'beta'
+  part 'new_part'
 end
 
 describe Admin::PagesController do
@@ -16,11 +15,12 @@ describe Admin::PagesController do
   describe "#new" do
     context 'without a class param' do
       before do
+        Page.part :original
         get :new
       end
 
       it "should assign default parts when no class is passed" do
-        assigns(:page).parts.map(&:name).should eql(%w(body extended))
+        assigns(:page).parts.map(&:name).should eql(%w(original))
       end
 
       it "should not set a page class if none is given" do
@@ -38,7 +38,7 @@ describe Admin::PagesController do
       end
 
       it "should assign parts to @page based on the class" do
-        assigns(:page).parts.map(&:name).should eql(%w(body extended alpha beta))
+        assigns(:page).parts.map(&:name).should include('new_part')
       end
 
       it "should set a layout" do
