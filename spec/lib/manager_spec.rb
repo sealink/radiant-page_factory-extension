@@ -10,35 +10,27 @@ describe PageFactory::Manager do
     create_record :page_part, :new, :name => 'new'
   end
 
-  class Page < ActiveRecord::Base
+  class ManagedPage < Page
     part 'existing'
     part 'new'
   end
 
-  class ManagedPage < Page
-    part 'new'
-  end
-
-  class OtherPage < Page
-    part 'new'
-  end
-
   before do
-    @managed, @plain, @other, @existing, @old, @new =
-    pages(:managed), pages(:plain), pages(:other), page_parts(:existing), page_parts(:old), page_parts(:new)
+    @managed, @plain, @existing, @old, @new =
+    pages(:managed), pages(:plain), page_parts(:existing), page_parts(:old), page_parts(:new)
   end
 
   describe ".prune_parts!" do
     it "should remove vestigial parts" do
-      @plain.parts.concat [@existing, @old]
+      @managed.parts.concat [@existing, @old]
       PageFactory::Manager.prune_parts!
-      @plain.reload.parts.should_not include(@old)
+      @managed.reload.parts.should_not include(@old)
     end
 
     it "should leave listed parts alone" do
-      @plain.parts.concat [@existing, @old]
+      @managed.parts.concat [@existing, @old]
       PageFactory::Manager.prune_parts!
-      @plain.reload.parts.should include(@existing)
+      @managed.reload.parts.should include(@existing)
     end
 
     it "should operate on a single subclass" do
@@ -82,23 +74,23 @@ describe PageFactory::Manager do
 
     before :each do
       @part = SubPagePart.new(:name => 'new')
-      @plain.parts = [@part]
+      @managed.parts = [@part]
     end
 
     it "should delete parts whose classes don't match" do
       PageFactory::Manager.sync_parts!
-      @plain.reload.parts.should_not include(@new)
+      @managed.reload.parts.should_not include(@new)
     end
 
     it "should replace parts whose classes don't match" do
       PageFactory::Manager.sync_parts!
-      @plain.reload.parts.detect { |p| p.name == 'new'}.class.should == PagePart
+      @managed.reload.parts.detect { |p| p.name == 'new'}.class.should == PagePart
     end
 
     it "should leave synced parts alone" do
-      @plain.parts = [@new]
+      @managed.parts = [@new]
       PageFactory::Manager.sync_parts!
-      @plain.reload.parts.should eql([@new])
+      @managed.reload.parts.should eql([@new])
     end
 
     it "should operate on a single subclass" do
@@ -111,22 +103,22 @@ describe PageFactory::Manager do
 
   describe ".update_parts" do
     it "should add missing parts" do
-      @plain.parts.should be_empty
+      @managed.parts.should be_empty
       PageFactory::Manager.update_parts
-      @plain.parts.reload.map(&:name).should include('new')
+      @managed.parts.reload.map(&:name).should include('new')
     end
 
     it "should not duplicate existing parts" do
-      @plain.parts.concat [@new, @existing]
-      lambda { PageFactory::Manager.update_parts }.should_not change(@plain.parts, :size)
+      @managed.parts.concat [@new, @existing]
+      lambda { PageFactory::Manager.update_parts }.should_not change(@managed.parts, :size)
     end
 
     it "should not replace matching parts" do
-      @plain.parts.concat [@new, @existing]
+      @managed.parts.concat [@new, @existing]
       PageFactory::Manager.update_parts
-      @plain.reload
-      @plain.parts.should include(@new)
-      @plain.parts.should include(@existing)
+      @managed.reload
+      @managed.parts.should include(@new)
+      @managed.parts.should include(@existing)
     end
 
     it "should operate on a single subclasses" do
@@ -135,29 +127,34 @@ describe PageFactory::Manager do
       @plain.reload.parts.should == [e]
     end
   end
+
+  describe ".update_fields" do
+    it "should add missing fields"
+    it "should not duplicate existing fields"
+    it "should not replace matching fields"
+    it "should operate on a single subclass"
+  end
   
   describe ".sync_layouts!" do
     dataset do
       create_record :layout, :one, :name => 'Layout One'
       create_record :layout, :two, :name => 'Layout Two'
     end
-    Page.layout 'Layout One'
     ManagedPage.layout 'Layout One'
-    OtherPage.layout 'Layout One'
 
     before do
-      @plain.layout = layouts(:two)
-      @plain.save
+      @managed.layout = layouts(:two)
+      @managed.save
     end
 
     it "should change page layout to match factory" do
       PageFactory::Manager.sync_layouts!
-      @plain.reload.layout.should eql(layouts(:one))
+      @managed.reload.layout.should eql(layouts(:one))
     end
 
     it "should operate on a single factory" do
       PageFactory::Manager.sync_layouts! :ManagedPage
-      @plain.reload.layout.should eql(layouts(:two))
+      @plain.reload.layout.should_not eql(layouts(:one))
     end
   end
 
