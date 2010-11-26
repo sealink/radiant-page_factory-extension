@@ -21,7 +21,7 @@ describe Admin::PagesController do
       end
 
       it "should assign default parts when no class is passed" do
-        assigns(:page).parts.map(&:name).should eql(%w(original))
+        assigns(:page).parts.map(&:name).should == Page.new_with_defaults.parts.map(&:name)
       end
 
       it "should not set a page class if none is given" do

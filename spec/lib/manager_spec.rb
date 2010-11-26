@@ -112,6 +112,7 @@ describe PageFactory::Manager do
 
     it "should not duplicate existing parts" do
       @managed.parts.concat [@new, @existing]
+      @managed.parts.reload
       lambda { PageFactory::Manager.update_parts }.should_not change(@managed.parts, :size)
     end
 
