@@ -1,27 +1,20 @@
 module PageFactory
   ##
   # PageFactory::Manager is used to update your existing content with changes
-  #   subsequently made to your PageFactories. All of these methods take a single
-  #   optional argument, which should be the name of a PageFactory class.
+  #   subsequently made to your Page classes. All of these methods take a single
+  #   optional argument, which should be the name of a Page class.
   #
-  #   If no argument is given, the method is run for all PageFactories.
-  #   Plain old pages not created with a specific factory are never affected in
-  #   this case. If the name of a PageFactory is given, the method is only run
-  #   on pages that were initially created by the specified PageFactory.
-  #
-  #   Note that it is possible to pass 'page' as an argument, if you really
-  #   need to update pages that were created without a specific factory.
+  #   If a class name is given, only pages of that class are affected. If no
+  #   argument is given, the method is run for Page and all of its subclasses.
   class Manager
     class << self
-
       ##
-      # Remove parts not specified in a PageFactory from all pages initially
-      #   created by that PageFactory. This is useful if you decide to remove
-      #   a part from a PageFactory and you want your existing content to
-      #   reflect that change.
+      # Remove parts not specified in a Page class from all instances of that class.
+      #   This is useful if you decide to remove a part from a Page class and you
+      #   want your previously created pages to reflect that removal.
       #
-      # @param [nil, String, Symbol, #to_s] page_factory The PageFactory to
-      #   restrict this operation to, or nil to run it on all PageFactories.
+      # @param [nil, String, Symbol, #to_s] klass The Page class to restrict
+      # this method to, or nil to run on Page and all of its descendants.
       def prune_parts!(klass=nil)
         select_class(klass).each do |subclass|
           parts = PagePart.scoped(:include => :page).
@@ -32,13 +25,13 @@ module PageFactory
       end
 
       ##
-      # Add any parts defined in a PageFactory to all pages initially created
-      #   by that factory, if those pages are missing any parts. This can be
-      #   used when you've added a part to a factory and you want your existing
-      #   content to reflect that change.
+      # Add any parts defined in a Page class to all instances of that class,
+      #   if those records are missing any parts. This can be used when you've 
+      #   added a part to a class and you want your existing content to reflect
+      #   that change.
       #
-      # @param [nil, String, Symbol, #to_s] page_factory The PageFactory to
-      #   restrict this operation to, or nil to run it on all PageFactories.
+      # @param [nil, String, Symbol, #to_s] klass The Page class to operate on,
+      #   or nil to run it on Page and all of its descendants.
       def update_parts(klass=nil)
         select_class(klass).each do |subclass|
           Page.find(:all, :include => :parts, :conditions => {:class_name => name_for(subclass)}).each do |page|
@@ -50,13 +43,13 @@ module PageFactory
 
       ##
       # Replace any parts on a page that share a _name_ but not a _class_ with
-      #   the parts defined in its PageFactory. Mismatched parts will be
-      #   replaced with wholly new parts of the proper class -- this method
-      #   _will_ discard content. Unless you're using an extension that
-      #   subclasses PagePart (this is rare) you won't need this method.
+      #   the parts defined in the Page's class. Mismatched parts will be replaced
+      #   with wholly new parts of the proper class -- this method _will_
+      #   discard content. Unless you're using an extension that subclasses
+      #   PagePart (this is rare) you won't need this method.
       #
-      # @param [nil, String, Symbol, #to_s] page_factory The PageFactory to
-      #   restrict this operation to, or nil to run it on all PageFactories.
+      # @param [nil, String, Symbol, #to_s] klass The Page class to operate on,
+      #   or nil to run it on Page and all of its descendants.
       def sync_parts!(klass=nil)
         select_class(klass).each do |subclass|
           Page.find(:all, :include => :parts, :conditions => {:class_name => name_for(subclass)}).each do |page|
@@ -70,14 +63,13 @@ module PageFactory
       end
 
       ##
-      # Add any fields defined on a Page class to all pages of that class,
+      # Add any fields defined on a Page class to all instances of that class,
       #   should those fields be missing. This can be useful when you've added
       #   a field to a Page class and you want your existing content to reflect
       #   that change.
       #
-      # @param [nil, String, Symbol, #to_s] klass The Page class to restrict
-      #   this operation to. Can be nil, in which case Page and all of its
-      #   subclasses are updated.
+      # @param [nil, String, Symbol, #to_s] klass The Page class to operate on,
+      #   or nil to run it on Page and all of its descendants.
       def update_fields(klass=nil)
         select_class(klass).each do |subclass|
           Page.find(:all, :include => :fields, :conditions => {:class_name => name_for(subclass)}).each do |page|
@@ -98,13 +90,12 @@ module PageFactory
       end
 
       ##
-      # Update the layout of all pages initially created by a PageFactory to
-      #   match the layout currently specified on that PageFactory. Used when
-      #   you decide to use a new layout in a PageFactory and you want your
-      #   existing content to reflect that change.
+      # Update the layout of all instances of a Page class to match the layout
+      #   specified by the class. Used when you want to use a new layout for
+      #   a specific Page class and need to update your existing content.
       #
-      # @param [nil, String, Symbol, #to_s] page_factory The PageFactory to
-      #   restrict this operation to, or nil to run it on all PageFactories.
+      # @param [nil, String, Symbol, #to_s] klass The Page class to operate on,
+      #   or nil to run it on Page and all of its descendants.
       def sync_layouts!(klass=nil)
         select_class(klass).each do |subclass|
           Page.update_all({:layout_id => Layout.find_by_name(subclass.layout, :select => :id).try(:id)}, {:class_name => name_for(subclass)})
