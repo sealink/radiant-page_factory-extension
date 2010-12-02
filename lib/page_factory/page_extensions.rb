@@ -40,11 +40,21 @@ module PageFactory
           ActiveSupport::Deprecation.warn("Page.remove is deprecated, please use Page.remove_part instead", caller)
           remove_part(*names)
         end
+
+        def load_subclasses_with_factory
+          load_subclasses_without_factory
+          %w(app/models lib).each do |path|
+            Dir["#{Rails.root}/#{path}/*_page.rb"].each do |page|
+              $1.camelize.constantize if page =~ %r{/([^/]+)\.rb}
+            end
+          end
+        end
       end
 
       class << base
         alias_method_chain :default_page_parts, :factory
         alias_method_chain :default_page_fields, :factory
+        alias_method_chain :load_subclasses, :factory
         alias_method :remove_parts, :remove_part
         alias_method :remove_fields, :remove_field
       end

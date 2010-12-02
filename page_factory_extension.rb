@@ -13,5 +13,6 @@ class PageFactoryExtension < Radiant::Extension
     Admin::PagePartsController.helper 'admin/part_description'
     admin.pages.edit.add :part_controls, 'admin/page_parts/part_description'
     ActiveSupport::Dependencies.load_paths << File.join(Rails.root, 'lib')
+    ActiveSupport::Dependencies.load_paths << File.join(Rails.root, %w(app models))
   end
 end
