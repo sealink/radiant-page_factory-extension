@@ -17,7 +17,7 @@ module PageFactory
               read_inheritable_attribute :#{attr}s                            #   read_inheritable_attribute :parts
             end                                                               # end
 
-            def default_page_#{attr}s_with_factory(config = Radiant::Config)  # def default_page_parts_with_factory
+            def default_page_#{attr}s(config = Radiant::Config)  # def default_page_parts_with_factory
               self.#{attr}s                                                   #   self.parts
             end                                                               # end
 
@@ -41,10 +41,9 @@ module PageFactory
           remove_part(*names)
         end
 
-        def load_subclasses_with_factory
+        def load_subclasses
           return unless PageField.table_exists?
-
-          load_subclasses_without_factory
+          # super
           %w(app/models lib).each do |path|
             Dir["#{Rails.root}/#{path}/*_page.rb"].each do |page|
               $1.camelize.constantize if page =~ %r{/([^/]+)\.rb}
@@ -54,9 +53,9 @@ module PageFactory
       end
 
       class << base
-        alias_method_chain :default_page_parts, :factory
-        alias_method_chain :default_page_fields, :factory
-        alias_method_chain :load_subclasses, :factory
+        # alias_method_chain :default_page_parts, :factory
+        # alias_method_chain :default_page_fields, :factory
+        # alias_method_chain :load_subclasses, :factory
         alias_method :remove_parts, :remove_part
         alias_method :remove_fields, :remove_field
       end
