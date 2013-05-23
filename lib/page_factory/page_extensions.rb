@@ -42,6 +42,8 @@ module PageFactory
         end
 
         def load_subclasses_with_factory
+          return unless PageField.table_exists?
+
           load_subclasses_without_factory
           %w(app/models lib).each do |path|
             Dir["#{Rails.root}/#{path}/*_page.rb"].each do |page|
