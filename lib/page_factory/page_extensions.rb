@@ -4,8 +4,6 @@ module PageFactory
     def self.included(base)
       base.instance_eval do
         class_inheritable_array_writer :parts, :fields, :instance_writer => false
-        self.parts = default_page_parts
-        self.fields = default_page_fields
 
         def layout(name = nil)
           @layout = name || @layout
@@ -16,6 +14,10 @@ module PageFactory
             def #{attr}s                                                      # def parts
               read_inheritable_attribute :#{attr}s                            #   read_inheritable_attribute :parts
             end                                                               # end
+
+            # Must be done at end as otherwise method #{attr}s doesn't exist
+            self.#{attr}s.clear if self.#{attr}s
+            self.#{attr}s = default_page_#{attr}s
 
             def default_page_#{attr}s(config = Radiant::Config)  # def default_page_parts_with_factory
               self.#{attr}s                                                   #   self.parts
